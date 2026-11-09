@@ -160,3 +160,29 @@ NLP methods and NLP benchmarks matter.
     assert!(md.contains("## Critical read") && md.contains("## Annotation index") && md.contains("Page-by-page"), "{md}");
     assert!(seen.lock().unwrap().contains(&"done".to_string()));
 }
+
+#[test]
+fn summary_pdf_roundtrip() {
+    let ann = |id: u32, page: u32, q: &str| Annotation {
+        id, page, quote: q.into(), kind: "star".into(), note: "main result \u{2014} \u{201C}wow\u{201D} (really)".into(),
+        detail: "Key claim, with caf\u{e9} and parentheses (like this) \\ backslash.".into(),
+        category: "result".into(), severity: "major".into(),
+    };
+    let mut anns = vec![];
+    for i in 0..40 { anns.push(ann(i + 1, 1 + i / 8, "adaptive learning rates reduce the validation loss")); }
+    let data = SummaryExport {
+        title: "A Very Long Paper Title About Stochastic Gradient Descent and Friends".into(),
+        model: "gemma-3".into(),
+        tldr: Some(Tldr { one_liner: "Adaptive schedules cut loss.".into(), bullets: vec!["Point one".into(), "Point two".into()], eli5: "Simple words.".into(), keywords: vec!["sgd".into()] }),
+        acronyms: vec![Acronym { short: "SGD".into(), long: "Stochastic Gradient Descent".into(), source: "paper".into(), count: 4, first_page: 1, context: String::new() }],
+        annotations: anns,
+    };
+    let bytes = crate::pdfout::render(&data);
+    assert!(bytes.starts_with(b"%PDF-1.4"));
+    let path = std::env::temp_dir().join("neuron7-summary-test.pdf");
+    std::fs::write(&path, &bytes).unwrap();
+    let pages = extract_pages(path.to_str().unwrap()).expect("our own PDF must parse");
+    assert!(pages.len() >= 2, "40 annotations should span several pages, got {}", pages.len());
+    let all = pages.join("\n");
+    assert!(all.contains("Stochastic Gradient Descent") && all.contains("Adaptive schedules cut loss") && all.contains("PAGE 5"), "{all}");
+}

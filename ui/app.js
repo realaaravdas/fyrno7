@@ -351,6 +351,15 @@ async function exportAs(kind) {
   const R = S.result; const base = (S.name || "paper").replace(/\.pdf$/i, "");
   if (kind === "print") return printAnnotated();
   if (!R) return;
+  if (kind === "pdf") {
+    const path = await backend.saveDialog(`${base}-summary.pdf`, "pdf", "PDF");
+    if (!path) return;
+    try {
+      await backend.exportSummary(path, { title: R.title || S.name, model: R.model || "", tldr: R.tldr, acronyms: R.acronyms, annotations: R.annotations.filter((a) => !S.removed.has(a.id) && !S.hiddenCats.has(a.category)) });
+      toast(`Saved ${path.split(/[\\/]/).pop()}`);
+    } catch (e) { toast(String(e), true); }
+    return;
+  }
   const defs = {
     md: [`${base}-companion.md`, "md", R.companionMd, "Markdown"],
     html: [`${base}-companion.html`, "html", htmlDoc(R), "HTML"],

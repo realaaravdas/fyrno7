@@ -23,6 +23,7 @@ function tauriBackend() {
     },
     saveDialog: (name, ext, label) => T.dialog.save({ defaultPath: name, filters: [{ name: label, extensions: [ext] }] }),
     saveText: (path, content) => invoke("save_text_file", { path, content }),
+    exportSummary: (path, data) => invoke("export_summary_pdf", { path, data }),
     onFileDrop(over, drop) {
       T.webview.getCurrentWebview().onDragDropEvent((e) => {
         const p = e.payload;
@@ -84,6 +85,7 @@ function mockBackend() {
       i.onchange = async () => res(i.files[0] ? await register(i.files[0]) : null); i.click();
     }),
     async saveDialog(name) { return name; },
+    async exportSummary(name) { console.log("mock summary export", name); },
     async saveText(name, content) { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([content])); a.download = name; a.click(); },
     onFileDrop(over, drop) {
       addEventListener("dragover", (e) => { e.preventDefault(); over(true); });

@@ -37,7 +37,7 @@ pub struct AnalyzeRequest {
     pub options: Options,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Annotation {
     pub id: u32,
@@ -50,7 +50,7 @@ pub struct Annotation {
     pub severity: String,
 }
 
-#[derive(Debug, Clone, Serialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Tldr {
     pub one_liner: String,
@@ -59,7 +59,7 @@ pub struct Tldr {
     pub keywords: Vec<String>,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Acronym {
     pub short: String,
@@ -100,3 +100,13 @@ pub struct Progress {
     pub total: u32,
     pub message: String,
 }
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SummaryExport {
+    pub title: String,
+    pub model: String,
+    pub tldr: Option<Tldr>,
+    pub acronyms: Vec<Acronym>,
+    pub annotations: Vec<Annotation>,
+}
+

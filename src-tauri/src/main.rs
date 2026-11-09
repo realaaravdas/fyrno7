@@ -3,6 +3,7 @@
 mod acronyms;
 mod analysis;
 mod llm;
+mod pdfout;
 mod prompts;
 mod textutil;
 mod types;
@@ -90,6 +91,11 @@ fn cancel_analysis(state: State<'_, AppState>) {
 }
 
 #[tauri::command]
+fn export_summary_pdf(path: String, data: SummaryExport) -> Result<(), String> {
+    std::fs::write(&path, pdfout::render(&data)).map_err(|e| format!("Cannot write {path}: {e}"))
+}
+
+#[tauri::command]
 fn save_text_file(path: String, content: String) -> Result<(), String> {
     std::fs::write(&path, content).map_err(|e| format!("Cannot write {path}: {e}"))
 }
@@ -104,7 +110,8 @@ fn main() {
             inspect_pdf,
             analyze,
             cancel_analysis,
-            save_text_file
+            save_text_file,
+            export_summary_pdf
         ])
         .run(tauri::generate_context!())
         .expect("error while running neuron7");
