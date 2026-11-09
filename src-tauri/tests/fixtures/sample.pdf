@@ -1,0 +1,68 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 7 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >>
+endobj
+5 0 obj
+<< /Length 984 >>
+stream
+BT /F1 12 Tf 14 TL 56 740 Td
+(Attention Improves Learning: A Study of Stochastic Gradient Descent \(SGD\)) Tj T*
+(Jane Doe, John Roe  -  University of Nowhere) Tj T*
+(Abstract) Tj T*
+(We study how Stochastic Gradient Descent \(SGD\) behaves when training Large Language) Tj T*
+(Models \(LLMs\) with small batches. Our main finding is that adaptive learning rates reduce) Tj T*
+(the validation loss by 14.2 percent compared to a strong baseline. We also show that the) Tj T*
+(improvement vanishes when the dataset is smaller than ten thousand examples.) Tj T*
+(1 Introduction) Tj T*
+(Training neural networks remains difficult because the loss surface is non-convex and noisy.) Tj T*
+(Prior work \(Smith 2019\) claims that momentum alone is sufficient, but we find this is not) Tj T*
+(true for transformer models. The NLP community has long relied on heuristics for tuning.) Tj T*
+(Our contributions are threefold: a new scheduler, a theoretical bound, and an open benchmark.) Tj T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Length 767 >>
+stream
+BT /F1 12 Tf 14 TL 56 740 Td
+(2 Method) Tj T*
+(We propose the Adaptive Warmup Scheduler \(AWS\) which adjusts the step size every epoch.) Tj T*
+(The scheduler uses a running estimate of gradient variance to decide when to decay.) Tj T*
+(Experiments run on 8 GPUs with a fixed random seed of 42 and mixed precision enabled.) Tj T*
+(3 Results) Tj T*
+(AWS reaches 91.3 percent accuracy on the benchmark, outperforming the baseline by 2.1 points.) Tj T*
+(However we only evaluated on English text so generalization to other languages is unknown.) Tj T*
+(4 Conclusion) Tj T*
+(Adaptive schedules matter. Future work will explore larger models and multilingual data.) Tj T*
+(References) Tj T*
+(Smith, A. \(2019\). Momentum is all you need. Journal of Optimization.) Tj T*
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000373 00000 n 
+0000001408 00000 n 
+0000002226 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+2296
+%%EOF

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>neuron7</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><circle cx="12" cy="12" r="11" fill="url(#lg)"/><path d="M8 16 16 8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M8.5 18.5h7" stroke="#ffe678" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>neuron7</span>
+    </div>
+    <div class="doc-title" id="docTitle">No paper open</div>
+    <div class="top-actions">
+      <button class="pill" id="connPill" title="Local model connection"><span class="dot" id="connDot"></span><span id="connText">Not connected</span></button>
+      <button class="icon-btn" id="btnTogglePanel" title="Toggle side panel"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
+      <button class="icon-btn" id="btnSettings" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- Left: controls -->
+    <aside class="sidebar" id="sidebar">
+      <section class="card" id="paperCard">
+        <div class="drop" id="dropzone">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6m-3 3 3-3 3 3"/></svg>
+          <div><b>Open a paper</b><small>Drop a PDF here or click to browse</small></div>
+        </div>
+        <div class="paper-meta" id="paperMeta" hidden></div>
+      </section>
+
+      <section class="card">
+        <h3>Annotation modes <small>combine freely</small></h3>
+        <label class="mode"><input type="checkbox" id="modeSharpie" checked />
+          <span class="mode-body"><span class="mode-ico sharpie"><svg viewBox="0 0 24 24"><path d="M4 20c3-1 4-4 6-6l7-7 3 3-7 7c-2 2-5 3-9 3z"/><path d="m15 5 4 4"/></svg></span>
+          <span><b>Sharpie</b><small>Hand-drawn circles, underlines &amp; scribbled margin notes</small></span></span></label>
+        <label class="mode"><input type="checkbox" id="modePro" />
+          <span class="mode-body"><span class="mode-ico pro"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
+          <span><b>Professional</b><small>Clean highlights with numbered review comments</small></span></span></label>
+        <label class="mode"><input type="checkbox" id="modeCompanion" />
+          <span class="mode-body"><span class="mode-ico doc"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+          <span><b>Companion document</b><small>A separate notes file: overview, critique, questions</small></span></span></label>
+      </section>
+
+      <section class="card">
+        <h3>Extras</h3>
+        <label class="switch"><input type="checkbox" id="optTldr" checked /><span class="track"></span><span class="sw-label"><b>TL;DR</b><small>One-liner, bullets &amp; plain-English version</small></span></label>
+        <label class="switch"><input type="checkbox" id="optAcr" checked /><span class="track"></span><span class="sw-label"><b>Acronym decoder</b><small>Definitions found in the paper, plus smart guesses</small></span></label>
+      </section>
+
+      <section class="card">
+        <h3>Reading style</h3>
+        <div class="field"><span>Detail</span>
+          <div class="seg" id="segDensity"><button data-v="light">Light</button><button data-v="balanced" class="on">Balanced</button><button data-v="thorough">Thorough</button></div></div>
+        <div class="field"><span>Reader</span>
+          <div class="seg" id="segLevel"><button data-v="undergrad">Newcomer</button><button data-v="grad" class="on">Grad</button><button data-v="expert">Expert</button></div></div>
+      </section>
+
+      <div class="run">
+        <button class="primary" id="btnAnalyze" disabled>Annotate paper</button>
+        <button class="ghost" id="btnCancel" hidden>Cancel</button>
+        <div class="progress" id="progress" hidden><div class="bar"><i id="barFill"></i></div><small id="progText"></small></div>
+      </div>
+    </aside>
+
+    <!-- Center: viewer -->
+    <main class="viewer-col">
+      <div class="toolbar" id="toolbar" hidden>
+        <div class="seg" id="segStyle">
+          <button data-v="sharpie" class="on">Sharpie</button>
+          <button data-v="pro">Professional</button>
+        </div>
+        <label class="chip-toggle"><input type="checkbox" id="chkAnn" checked /><span>Annotations</span></label>
+        <label class="chip-toggle"><input type="checkbox" id="chkAcr" /><span>Decode acronyms</span></label>
+        <span class="spacer"></span>
+        <div class="zoom">
+          <button class="icon-btn" id="zoomOut" title="Zoom out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+          <span id="zoomLbl">100%</span>
+          <button class="icon-btn" id="zoomIn" title="Zoom in"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+        <span id="pageInd" class="page-ind"></span>
+        <div class="menu-wrap">
+          <button class="btn" id="btnExport">Export <svg viewBox="0 0 24 24" width="14" height="14"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="menu" id="exportMenu" hidden>
+            <button data-x="print">Annotated PDF (print dialog)</button>
+            <button data-x="md" id="xMd">Companion as Markdown</button>
+            <button data-x="html" id="xHtml">Companion as HTML</button>
+            <button data-x="json">Annotations as JSON</button>
+          </div>
+        </div>
+      </div>
+      <div class="viewer" id="viewer">
+        <div class="empty" id="emptyState">
+          <div class="empty-art">
+            <svg viewBox="0 0 220 150" width="220"><rect x="40" y="10" width="120" height="132" rx="6" class="e-paper"/><rect x="56" y="30" width="70" height="6" rx="3" class="e-line"/><rect x="56" y="46" width="88" height="6" rx="3" class="e-line"/><rect x="56" y="62" width="60" height="6" rx="3" class="e-line"/><rect x="52" y="44" width="96" height="10" rx="5" fill="#fde047" opacity=".6"/><ellipse cx="86" cy="66" rx="36" ry="11" fill="none" stroke="#ef4444" stroke-width="3"/><path d="M56 100q10-6 20 0t20 0 20 0 20 0" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><rect x="56" y="114" width="80" height="6" rx="3" class="e-line"/><text x="150" y="68" font-family="Caveat, cursive" font-size="22" fill="#ef4444" transform="rotate(-6 150 68)">key result!</text></svg>
+          </div>
+          <h2>Read it like a human would</h2>
+          <p>Open a research paper and let your local model underline, circle, question and summarise it. Nothing leaves your computer.</p>
+          <button class="primary" id="btnOpenBig">Open a PDF</button>
+          <small id="emptyHint"></small>
+        </div>
+        <div id="pages"></div>
+      </div>
+    </main>
+
+    <!-- Right: results -->
+    <aside class="panel" id="panel">
+      <nav class="tabs" id="tabs">
+        <button data-tab="notes" class="on">Notes</button>
+        <button data-tab="tldr">TL;DR</button>
+        <button data-tab="acr">Acronyms</button>
+        <button data-tab="doc">Companion</button>
+      </nav>
+      <div class="tab-body" id="tabBody"></div>
+    </aside>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="modal" id="settingsModal" hidden>
+  <div class="dialog">
+    <header><h2>Local model settings</h2><button class="icon-btn" id="closeSettings"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
+    <div class="dlg-body">
+      <div class="presets">
+        <span>Quick setup</span>
+        <button class="btn" data-preset="lmstudio">LM Studio</button>
+        <button class="btn" data-preset="ollama">Ollama</button>
+      </div>
+      <label class="fld"><span>Server address</span><input id="sBase" placeholder="http://localhost:1234" /></label>
+      <label class="fld"><span>Model</span>
+        <div class="row"><select id="sModel"></select><button class="btn" id="btnRefresh">Detect models</button></div></label>
+      <label class="fld"><span>API key <i>(usually empty for local servers)</i></span><input id="sKey" type="password" placeholder="optional" /></label>
+      <div class="grid3">
+        <label class="fld"><span>Creativity</span><input id="sTemp" type="number" step="0.1" min="0" max="1.5" /></label>
+        <label class="fld"><span>Chunk size <i>(chars)</i></span><input id="sChunk" type="number" step="500" min="2000" max="60000" /></label>
+        <label class="fld"><span>Max reply tokens</span><input id="sTokens" type="number" step="256" min="512" max="16000" /></label>
+      </div>
+      <div class="status-line" id="sStatus"></div>
+      <details class="help" open>
+        <summary>How to run Gemma locally</summary>
+        <ol>
+          <li><b>LM Studio</b> (easiest): install from lmstudio.ai, search for <code>gemma 3</code> (12B or 27B recommended, 4B works for quick drafts) and download it.</li>
+          <li>Open the <b>Developer</b> tab, load the model, set <b>Context length ≥ 8192</b>, and switch <b>Status: Running</b>. The server listens on <code>http://localhost:1234</code>.</li>
+          <li><b>Ollama</b> alternative: run <code>ollama pull gemma3</code> then keep Ollama running. Use <code>http://localhost:11434</code>.</li>
+          <li>Press <b>Detect models</b>, pick your Gemma model, and you are ready.</li>
+        </ol>
+        <p>Any OpenAI-compatible local server works (llama.cpp <code>llama-server</code>, Jan, KoboldCpp, vLLM).</p>
+      </details>
+    </div>
+    <footer><button class="btn" id="btnTest">Test connection</button><button class="primary" id="btnSaveSettings">Save</button></footer>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

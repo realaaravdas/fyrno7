@@ -1,0 +1,79 @@
+# neuron7
+
+A desktop app that reads a research paper and marks it up the way a person would, using a **local** LLM
+(Gemma or anything else you can run). Nothing leaves your computer.
+
+The backend is Rust ([Tauri 2](https://tauri.app)); the UI is dependency-free HTML/CSS/JS with a vendored copy of
+pdf.js, so there is no Node toolchain to install.
+
+## Features
+
+| | |
+|---|---|
+| **Sharpie mode** | Hand-drawn marker highlights, wobbly underlines, circled terms, squiggles under doubtful claims, stars on takeaways, boxed definitions, and scribbled margin notes with arrows. |
+| **Professional mode** | Clean category-coloured highlights, numbered badges and review-style comment cards (category + severity) in the margin. |
+| **Companion document** | A separate notes file: overview, contributions, method, key results, page-by-page digest, strengths / weaknesses, questions for the authors, glossary, annotation index. Export as Markdown or HTML. |
+| **Combine them** | Modes are independent toggles. Generate Sharpie + Professional + Companion in one pass and flip between the two overlay styles in the toolbar. |
+| **Acronym decoder** | Definitions the paper gives itself ("Stochastic Gradient Descent (SGD)") are mined deterministically in Rust. Only genuinely undefined abbreviations go to the model, and they are labelled *inferred*. Optional dotted-underline tooltips directly on the pages. |
+| **TL;DR** | One-liner, key points, a plain-English version and topic keywords. |
+| **Export** | Annotated PDF (via the print dialog → *Save as PDF*), companion `.md` / `.html`, annotations `.json`. |
+
+Hallucinated quotes are rejected: every annotation's quote is verified against the PDF's text in Rust before it is
+shown, then located on the rendered page.
+
+## 1. Run a local model
+
+neuron7 talks to any **OpenAI-compatible** server.
+
+### LM Studio (easiest)
+1. Install [LM Studio](https://lmstudio.ai) and search for **gemma 3** (12B or 27B for quality, 4B for speed).
+2. Open the **Developer** tab, load the model, set **Context length ≥ 8192**, and start the server
+   (default `http://localhost:1234`).
+
+### Ollama
+```bash
+ollama pull gemma3
+```
+Keep Ollama running and use `http://localhost:11434` in neuron7's settings.
+
+Also works with llama.cpp `llama-server`, Jan, KoboldCpp, vLLM, etc.
+
+In neuron7: **Settings → Quick setup → Detect models**, choose your model, and the status pill turns green.
+
+**Tips.** Smaller models return less reliable JSON; the parser is forgiving and retries once, and a failed chunk only
+costs you that chunk. If you see a context-window error, lower *Chunk size* in Settings or raise the model's context
+length. Scanned PDFs need OCR first (the app needs selectable text).
+
+## 2. Build and run
+
+Requirements: [Rust](https://rustup.rs) (stable) and, on Windows, the WebView2 runtime (preinstalled on Windows 11)
+and MSVC build tools. On Linux install the Tauri system dependencies
+([guide](https://tauri.app/start/prerequisites/)).
+
+```bash
+cd src-tauri
+cargo run --release          # run
+cargo test                   # backend tests (PDF extraction, quote matching, acronyms, full pipeline vs. a fake LLM server)
+cargo install tauri-cli      # optional, for installers:
+cargo tauri build
+```
+
+## Layout
+
+```
+src-tauri/src/
+  main.rs       Tauri commands (connection check, PDF I/O, analyze, cancel, save)
+  analysis.rs   pipeline: chunking → annotations + digests → TL;DR → acronyms → companion doc
+  prompts.rs    prompt templates
+  llm.rs        OpenAI-compatible client, tolerant JSON extraction / salvage
+  acronyms.rs   deterministic acronym + definition mining
+  textutil.rs   quote verification against page text
+ui/
+  index.html styles.css app.js     interface
+  pdfpage.js                        quote → pixel rectangles on a pdf.js page
+  render.js                         Sharpie and Professional renderers (SVG)
+  backend.js                        Tauri bridge (+ tiny mock for previewing in a plain browser)
+  vendor/ fonts/                    pdf.js 4.10, Caveat and Permanent Marker (OFL)
+```
+
+Previewing `ui/` in a normal browser over `http://` uses a mock model, handy for UI work.
