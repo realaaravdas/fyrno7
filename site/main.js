@@ -185,6 +185,17 @@
 
   $$("[data-count]").forEach((el) => { const to = +el.dataset.count; if (!to || reduce) return; let n = 0; const id = setInterval(() => { el.textContent = ++n; if (n >= to) clearInterval(id); }, 260); });
 
+  /* ---------- detect OS for the primary download button ---------- */
+  (function () {
+    const ua = navigator.userAgent, R = "https://github.com/realaaravdas/neuron7/releases/latest/download/";
+    const os = /Mac/i.test(ua) && !/iPhone|iPad/i.test(ua) ? "mac" : /Linux|X11/i.test(ua) && !/Android/i.test(ua) ? "linux" : "windows";
+    const map = { windows: ["Windows", "neuron7-windows-x64-setup.exe"], mac: ["macOS", "neuron7-macos-universal.dmg"], linux: ["Linux", "neuron7-linux-x86_64.AppImage"] };
+    const p = $("#dlPrimary"); if (!p) return;
+    p.href = R + map[os][1]; $("#dlLabel").textContent = "Download for " + map[os][0];
+    $(`.os[data-os="${os}"]`)?.classList.add("me");
+    const hero = $(".cta .btn.primary"); if (hero) hero.lastChild.textContent = "Download for " + map[os][0];
+  })();
+
   /* ---------- install tabs + copy ---------- */
   $("#instTabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; $$("#instTabs button").forEach((x) => x.classList.toggle("on", x === b)); $$(".inst-pane").forEach((p) => p.classList.toggle("on", p.dataset.i === b.dataset.i)); });
   $$(".copy").forEach((b) => b.addEventListener("click", async () => {

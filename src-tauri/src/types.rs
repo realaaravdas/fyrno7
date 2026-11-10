@@ -91,6 +91,8 @@ pub struct PaperInfo {
     pub n_pages: u32,
     pub chars: usize,
     pub has_text: bool,
+    /// Zero-based indices of pages with (almost) no embedded text: they need OCR.
+    pub ocr_pages: Vec<u32>,
 }
 
 #[derive(Debug, Clone, Serialize)]

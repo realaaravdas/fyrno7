@@ -22,6 +22,8 @@ function tauriBackend() {
       return Array.isArray(r) ? r[0] : r;
     },
     saveDialog: (name, ext, label) => T.dialog.save({ defaultPath: name, filters: [{ name: label, extensions: [ext] }] }),
+    ocrPage: (bytes) => invoke("ocr_page", bytes),
+    setPageTexts: (path, pages) => invoke("set_page_texts", { path, pages }),
     saveText: (path, content) => invoke("save_text_file", { path, content }),
     exportSummary: (path, data) => invoke("export_summary_pdf", { path, data }),
     onFileDrop(over, drop) {
@@ -41,7 +43,7 @@ function tauriBackend() {
 
 function mockBackend() {
   const files = new Map();
-  const texts = new Map();
+  const texts = new Map(); const ocrDone = new Set();
   async function pagesText(path) {
     if (texts.has(path)) return texts.get(path);
     const doc = await pdfjs.getDocument({ data: files.get(path).slice() }).promise;
@@ -55,8 +57,19 @@ function mockBackend() {
     isDesktop: false,
     checkConnection: async () => ["gemma-3-12b-it (mock)"],
     readPdf: async (p) => files.get(p).slice(),
-    inspectPdf: async (p) => { const t = await pagesText(p); return { title: t[0].slice(0, 80), nPages: t.length, chars: t.join("").length, hasText: true }; },
+    inspectPdf: async (p) => { const t = await pagesText(p); if (/scan/i.test(p) && !ocrDone.has(p)) return { title: "Scanned paper", nPages: 1, chars: 0, hasText: false, ocrPages: [0] }; return { title: t[0].slice(0, 80), nPages: t.length, chars: t.join("").length, hasText: true, ocrPages: [] }; },
+    async ocrPage() { // browser preview only: canned result for the scan test fixture
+      await new Promise((r) => setTimeout(r, 1800));
+      const L = [["Neural networks learn representations from data.", 0.04, 0.14], ["Stochastic Gradient Descent (SGD) reduces the loss.", 0.04, 0.38], ["We evaluate on English text only.", 0.04, 0.62]];
+      return { text: L.map((l) => l[0]).join("\n"), lines: L.map(([text, x, y]) => ({ text, x, y, w: 0.9 * text.length / 52, h: 0.12 })) };
+    },
+    async setPageTexts(p) { ocrDone.add(p); },
     async analyze({ path, options }, onProgress) {
+      if (/scan/i.test(path)) {
+        for (let i = 0; i < 6; i++) { onProgress({ done: i, total: 6, message: `Reading pages 1 (${i + 1} of 6)` }); await new Promise((r) => setTimeout(r, 1500)); }
+        const A = (id, quote, kind, note) => ({ id, page: 1, quote, kind, note, detail: note, category: "claim", severity: "info" });
+        return { title: "Scanned paper", nPages: 1, model: "mock", tldr: null, acronyms: [], companionMd: null, warnings: [], annotations: [A(1, "networks learn representations", "circle", "core idea"), A(2, "Stochastic Gradient Descent (SGD)", "underline", "optimizer"), A(3, "English text only", "doubt", "narrow eval")] };
+      }
       const pages = await pagesText(path);
       const kinds = ["underline", "circle", "highlight", "question", "star", "doubt", "define", "link", "highlight", "underline"];
       const cats = ["claim", "term", "result", "question", "insight", "limitation", "definition", "reference", "method", "claim"].map((c) => (c === "term" ? "method" : c));

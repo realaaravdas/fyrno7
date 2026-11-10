@@ -7,11 +7,21 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="n7g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="480" y2="160"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#d946ef"/></linearGradient>
+  <symbol id="logo" viewBox="-8 -8 500 178">
+    <g fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5.5 94V36M5.5 56.5A20.5 20.5 0 0 1 46.5 56.5V94"/><path d="M71.5 65H129.5M129.5 65A29 29 0 1 0 122.7 83.6"/>
+      <path d="M154.5 36V73.5A20.5 20.5 0 0 0 195.5 73.5M195.5 36V94"/><path d="M220.5 94V36M220.5 64C220.5 45 233 36.5 250 36.5"/>
+      <circle cx="304" cy="65" r="29"/><path d="M358 94V36M358 56.5A20.5 20.5 0 0 1 399 56.5V94"/>
+    </g>
+    <path fill="url(#n7g)" stroke="none" d="M5.5 0H440C466 0 484 14 480 42C474 84 440 126 392 162C420 122 438 86 441 56C443 34 434 11 408 11H5.5A5.5 5.5 0 0 1 5.5 0Z"/>
+  </symbol>
+</defs></svg>
 <div id="app">
   <header class="topbar">
     <div class="brand">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><circle cx="12" cy="12" r="11" fill="url(#lg)"/><path d="M8 16 16 8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M8.5 18.5h7" stroke="#ffe678" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span>neuron7</span>
+      <svg class="wordmark" viewBox="-8 -8 500 178" aria-label="neuron7"><use href="#logo"/></svg>
     </div>
     <div class="doc-title" id="docTitle">No paper open</div>
     <div class="top-actions">
@@ -62,7 +72,9 @@
       <div class="run">
         <button class="primary" id="btnAnalyze" disabled>Annotate paper</button>
         <button class="ghost" id="btnCancel" hidden>Cancel</button>
-        <div class="progress" id="progress" hidden><div class="bar"><i id="barFill"></i></div><small id="progText"></small></div>
+        <div class="progress" id="progress" hidden>
+          <div class="prow"><b id="progPct">0.000%</b><span id="progEta">estimating…</span></div>
+          <div class="bar"><i id="barFill"></i></div><small id="progText"></small></div>
       </div>
     </aside>
 

@@ -15,8 +15,10 @@ export function normalize(s) {
   return { str: chars.join(""), map };
 }
 
-export async function buildModel(page) {
+export async function buildModel(page, ocr) {
   const tc = await page.getTextContent();
+  const nativeChars = tc.items.reduce((n, it) => n + (typeof it.str === "string" ? it.str.trim().length : 0), 0);
+  if (ocr && ocr.lines.length && nativeChars < 40) return modelFromOcr(ocr);
   const items = [];
   let raw = "";
   for (const it of tc.items) {
@@ -25,6 +27,19 @@ export async function buildModel(page) {
     raw += it.str;
     items.push({ start, end: raw.length, transform: it.transform, width: it.width, height: it.height });
     if (it.hasEOL) raw += "\n";
+  }
+  return { raw, items, norm: normalize(raw) };
+}
+
+/** Text model for a scanned page: one item per OCR line, positioned as fractions of the page. */
+function modelFromOcr(ocr) {
+  const items = [];
+  let raw = "";
+  for (const l of ocr.lines) {
+    const start = raw.length;
+    raw += l.text;
+    items.push({ start, end: raw.length, box: { x: l.x, y: l.y, w: l.w, h: l.h } });
+    raw += "\n";
   }
   return { raw, items, norm: normalize(raw) };
 }
@@ -64,6 +79,11 @@ export function rectsFor(model, a, b, viewport) {
     if (it.end <= a || it.start >= b || it.end === it.start) continue;
     const len = it.end - it.start;
     const f0 = Math.max(0, a - it.start) / len, f1 = Math.min(len, b - it.start) / len;
+    if (it.box) { // OCR line: box is a fraction of the page
+      const W = viewport.width, H = viewport.height;
+      raw.push({ x: (it.box.x + f0 * it.box.w) * W, y: it.box.y * H, w: Math.max(2, (f1 - f0) * it.box.w * W), h: it.box.h * H });
+      continue;
+    }
     const t = pdfjs.Util.transform(viewport.transform, it.transform);
     const h = Math.hypot(t[2], t[3]);
     if (Math.abs(t[1]) > 0.5 * Math.abs(t[0])) continue; // rotated text: skip

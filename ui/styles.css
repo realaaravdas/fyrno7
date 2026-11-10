@@ -29,7 +29,7 @@ code { background: var(--panel2); border: 1px solid var(--border); border-radius
 /* top bar */
 .topbar { height: 52px; flex: none; display: flex; align-items: center; gap: 16px; padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--border); }
 .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -.01em; font-size: 15px; }
-.brand svg { stroke: none; }
+.brand .wordmark { height: 30px; width: auto; stroke: none; color: var(--text); }
 .doc-title { flex: 1; text-align: center; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
 .top-actions { display: flex; align-items: center; gap: 6px; }
 .icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px; border: 0; background: transparent; color: var(--muted); }
@@ -216,3 +216,7 @@ svg.ov .sel { filter: drop-shadow(0 0 4px rgba(91,91,240,.9)); }
   * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 @page { margin: 8mm; }
+.prow { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.prow b { font-size: 18px; letter-spacing: -.01em; min-width: 92px; } .prow span { color: var(--muted); font-size: 12px; }
+.progress .bar i { transition: width .12s linear; }
+.paper-meta .okmsg { color: var(--ok); }

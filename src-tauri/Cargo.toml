@@ -1,6 +1,6 @@
 [package]
 name = "neuron7"
-version = "0.1.0"
+version = "0.2.0"
 description = "Annotate research papers like a human reader, powered by a local LLM"
 edition = "2021"
 
@@ -17,6 +17,10 @@ reqwest = { version = "0.12", default-features = false, features = ["json", "rus
 pdf-extract = "0.7"
 regex = "1"
 once_cell = "1"
+ocrs = "0.14.0"
+rten = "0.28.0"
+rten-imageproc = "0.28.0"
+image = { version = "0.25.10", default-features = false, features = ["png"] }
 
 [features]
 default = ["custom-protocol"]
@@ -26,3 +30,19 @@ custom-protocol = ["tauri/custom-protocol"]
 opt-level = 3
 lto = "thin"
 codegen-units = 4
+
+# OCR neural nets are slow in unoptimised builds; keep them fast during `cargo test`/`cargo run`.
+[profile.dev.package.rten]
+opt-level = 3
+[profile.dev.package.rten-vecmath]
+opt-level = 3
+[profile.dev.package.rten-simd]
+opt-level = 3
+[profile.dev.package.rten-gemm]
+opt-level = 3
+[profile.dev.package.rten-tensor]
+opt-level = 3
+[profile.dev.package.rten-imageproc]
+opt-level = 3
+[profile.dev.package.ocrs]
+opt-level = 3

@@ -47,7 +47,7 @@
     <canvas id="net" aria-hidden="true"></canvas>
     <div class="wrap hero-in">
       <div class="hero-copy">
-        <span class="eyebrow"><i></i> Open source · 100% local · Windows</span>
+        <span class="eyebrow"><i></i> Open source · 100% local · Windows, macOS, Linux</span>
         <h1>Read papers the way a <em>human</em> does.</h1>
         <p class="lead">neuron7 reads your research PDFs with a local LLM and marks them up like a sharp colleague with a Sharpie: circles, underlines, questions in the margin. Or like a reviewer with a pen. Plus a TL;DR and an acronym decoder. Nothing ever leaves your computer.</p>
         <div class="cta">
@@ -109,6 +109,8 @@
           <div class="chips big"><span>LM Studio</span><span>Ollama</span><span>llama.cpp</span><span>vLLM</span><span>Jan</span><span>KoboldCpp</span></div></article>
         <article class="card c-wide reveal"><h3>Export it your way</h3><p>A tidy Summary PDF with your TL;DR, acronyms and every annotation by page, plus companion Markdown / HTML, annotations JSON, or the annotated pages via print-to-PDF.</p>
           <div class="files"><span>summary.pdf</span><span>companion.md</span><span>companion.html</span><span>annotations.json</span></div></article>
+        <article class="card reveal"><h3>Scanned papers? Fine.</h3><p>Pages without text are read by a built-in OCR engine. It runs on your computer, with no download and no upload.</p>
+          <div class="scan"><i></i><b></b><b></b><b></b><b></b><em>OCR · local</em></div></article>
       </div>
     </div>
   </section>
@@ -116,21 +118,26 @@
   <!-- INSTALL -->
   <section class="sec alt" id="install">
     <div class="wrap">
-      <header class="sec-h"><span class="kicker">Get started</span><h2>Download, point it at a model, annotate.</h2><p>Free and open source. About 15 MB.</p></header>
+      <header class="sec-h"><span class="kicker">Get started</span><h2>Download, point it at a model, annotate.</h2><p>Free and open source for Windows, macOS and Linux.</p></header>
       <div class="install">
         <div class="dl-card">
           <svg viewBox="-8 -8 500 178" class="dl-logo"><use href="#logo"/></svg>
           <span class="oss-badge"><svg class="ico" viewBox="0 0 24 24"><path d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>Open source</span>
-          <h3>neuron7 for Windows</h3>
-          <p>Free and open source. Single portable <code>.exe</code>, no installer, no account.</p>
-          <a class="btn primary lg" href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-windows-x64.exe"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg>Download neuron7.exe</a>
+          <h3>Download neuron7</h3>
+          <p>Free and open source. No account, no cloud, works offline.</p>
+          <a class="btn primary lg" id="dlPrimary" href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-windows-x64-setup.exe"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg><span id="dlLabel">Download for Windows</span></a>
+          <div class="os-list">
+            <div class="os" data-os="windows"><b>Windows</b><span><a href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-windows-x64-setup.exe">Installer</a><a href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-windows-x64.msi">.msi</a><a href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-windows-x64.exe">Portable .exe</a></span></div>
+            <div class="os" data-os="mac"><b>macOS</b><span><a href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-macos-universal.dmg">.dmg (Apple Silicon + Intel)</a></span></div>
+            <div class="os" data-os="linux"><b>Linux</b><span><a href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-linux-x86_64.AppImage">AppImage</a><a href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-linux-amd64.deb">.deb</a><a href="https://github.com/realaaravdas/neuron7/releases/latest/download/neuron7-linux-x86_64.rpm">.rpm</a></span></div>
+          </div>
           <a class="muted-link" href="https://github.com/realaaravdas/neuron7/releases" target="_blank" rel="noopener">All releases</a>
           <a class="muted-link" href="https://github.com/realaaravdas/neuron7" target="_blank" rel="noopener">View the open-source code on GitHub</a>
-          <small>Unsigned build: Windows SmartScreen may ask you to click “More info → Run anyway”. macOS and Linux users can build from source.</small>
+          <small>Builds are not code-signed yet, so Windows and macOS show a one-time warning; see the <b>First launch</b> tab. The macOS and Linux builds are made by GitHub Actions and are not yet tested by the maintainer.</small>
         </div>
         <div class="steps-box">
           <div class="tabs sm" role="tablist" id="instTabs">
-            <button class="on" data-i="lm">LM Studio</button><button data-i="ol">Ollama</button><button data-i="src">Build from source</button>
+            <button class="on" data-i="lm">LM Studio</button><button data-i="ol">Ollama</button><button data-i="first">First launch</button><button data-i="src">Build from source</button>
           </div>
           <div class="inst-pane on" data-i="lm">
             <ol class="ol">
@@ -149,6 +156,18 @@
             <div class="code"><code>ollama pull gemma3</code><button class="copy" data-copy="ollama pull gemma3">Copy</button></div>
             <ol class="ol" start="3"><li>In neuron7 choose <b>Quick setup → Ollama</b> and press <b>Detect models</b>.</li></ol>
             <div class="code"><span>Server address</span><code>http://localhost:11434</code><button class="copy" data-copy="http://localhost:11434">Copy</button></div>
+          </div>
+          <div class="inst-pane" data-i="first">
+            <ol class="ol">
+              <li><b>Windows:</b> if SmartScreen says "Windows protected your PC", click <b>More info</b> then <b>Run anyway</b>.</li>
+              <li><b>macOS:</b> drag neuron7 to Applications, then right-click it and choose <b>Open</b>. If macOS says the app is "damaged", run this in Terminal:</li>
+            </ol>
+            <div class="code"><code>xattr -dr com.apple.quarantine /Applications/neuron7.app</code><button class="copy" data-copy="xattr -dr com.apple.quarantine /Applications/neuron7.app">Copy</button></div>
+            <ol class="ol" start="3">
+              <li><b>Linux AppImage:</b> make it executable, then run it:</li>
+            </ol>
+            <div class="code"><code>chmod +x neuron7-linux-x86_64.AppImage &amp;&amp; ./neuron7-linux-x86_64.AppImage</code><button class="copy" data-copy="chmod +x neuron7-linux-x86_64.AppImage &amp;&amp; ./neuron7-linux-x86_64.AppImage">Copy</button></div>
+            <p class="note">The .deb and .rpm packages install like any other: <code>sudo apt install ./neuron7-linux-amd64.deb</code> or <code>sudo dnf install ./neuron7-linux-x86_64.rpm</code>.</p>
           </div>
           <div class="inst-pane" data-i="src">
             <p class="note">Requires <a href="https://rustup.rs" target="_blank" rel="noopener">Rust</a> (stable). On Windows you also need the MSVC build tools; WebView2 ships with Windows 11.</p>
@@ -174,8 +193,8 @@ cargo run --release</code><button class="copy" data-copy="git clone https://gith
         <details><summary>Can the AI make things up?</summary><div><p>Every annotation’s quote is checked against the PDF’s own text in Rust, and anything that cannot be found is discarded. The <em>judgement</em> (“this looks weak”) is still the model’s opinion, so treat it like a well-read colleague’s margin notes, not ground truth. You can delete any annotation you disagree with.</p></div></details>
         <details><summary>Does it change my PDF?</summary><div><p>No. Annotations are drawn on top of the page in the app. Your original file is never modified. You can export a separate Summary PDF, or print the annotated pages to a new PDF.</p></div></details>
         <details><summary>How does the acronym decoder work?</summary><div><p>Definitions written in the paper, like “Stochastic Gradient Descent (SGD)”, are found with pattern matching and are marked <em>defined in paper</em>. Only abbreviations that are never defined are sent to the model, and they are labelled <em>inferred</em>. When the model is not sure, it says so instead of guessing.</p></div></details>
-        <details><summary>Does it work on scanned PDFs?</summary><div><p>Not directly: neuron7 needs selectable text. Run OCR on a scan first (for example with OCRmyPDF or Adobe Acrobat), then open the result.</p></div></details>
-        <details><summary>Windows only? Why the SmartScreen warning?</summary><div><p>The current release is a Windows build. The app is built with Tauri, so it can be compiled for macOS and Linux from source. The executable is not code-signed yet, so Windows may show a SmartScreen prompt the first time you run it.</p></div></details>
+        <details><summary>Does it work on scanned PDFs?</summary><div><p>Yes. If a page has no selectable text, neuron7 runs OCR on it automatically before annotating. The OCR engine and its models are built into the app and run entirely on your computer, with nothing downloaded or uploaded. Accuracy is best on clean, upright, English or Latin-script pages; badly skewed or low-resolution scans will give rougher text.</p></div></details>
+        <details><summary>Which platforms are supported? Why the warning on first launch?</summary><div><p>Windows, macOS (Apple Silicon and Intel) and Linux builds are published with each release. The macOS and Linux builds are produced by GitHub Actions and have not been tested by the maintainer yet, so please report problems. The apps are not code-signed, so Windows SmartScreen and macOS Gatekeeper show a one-time warning; the <b>First launch</b> tab explains how to open them.</p></div></details>
         <details><summary>Is it open source?</summary><div><p>Yes, the full source is public on <a href="https://github.com/realaaravdas/neuron7" target="_blank" rel="noopener">GitHub</a>. Issues and pull requests are welcome.</p></div></details>
       </div>
     </div>

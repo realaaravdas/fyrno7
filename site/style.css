@@ -186,3 +186,14 @@ h1 { font-size: clamp(38px, 4.6vw, 60px); margin: 22px 0 20px; font-weight: 750;
 @media (max-width: 980px) { .oss-in { grid-template-columns: 1fr; } .oss-points { grid-template-columns: 1fr; } }
 .oss-badge { display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px 4px 10px; border-radius: 99px; font-size: 12.5px; font-weight: 700; color: #22c55e; background: rgba(34,197,94,.13); border: 1px solid rgba(34,197,94,.3); }
 .oss-badge .ico { width: 14px; height: 14px; stroke-width: 2.4; }
+
+.os-list { width: 100%; display: grid; gap: 8px; margin: 8px 0 4px; } .os { display: grid; grid-template-columns: 84px 1fr; gap: 10px; align-items: baseline; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); transition: border-color .2s, background .2s; }
+.os b { font-size: 13.5px; } .os span { display: flex; flex-wrap: wrap; gap: 4px 14px; } .os a { color: var(--muted); text-decoration: none; font-size: 14px; border-bottom: 1px dotted var(--line); } .os a:hover { color: var(--accent); border-color: var(--accent); }
+.os.me { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, var(--surface)); }
+
+.scan { position: relative; height: 96px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--line); padding: 14px; display: grid; gap: 9px; align-content: center; overflow: hidden; }
+.scan b { display: block; height: 7px; border-radius: 4px; background: var(--line); animation: ocrfill 3.2s infinite; } .scan b:nth-of-type(2) { width: 84%; animation-delay: .25s } .scan b:nth-of-type(3) { width: 92%; animation-delay: .5s } .scan b:nth-of-type(4) { width: 58%; animation-delay: .75s }
+@keyframes ocrfill { 0%, 25% { background: var(--line); } 45%, 85% { background: var(--accent); } 100% { background: var(--line); } }
+.scan i { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent2), transparent); box-shadow: 0 0 14px var(--accent2); animation: sweep 3.2s ease-in-out infinite; }
+@keyframes sweep { 0% { top: 8%; } 50% { top: 88%; } 100% { top: 8%; } }
+.scan em { position: absolute; right: 10px; bottom: 8px; font: 700 10px var(--mono); font-style: normal; color: var(--accent); letter-spacing: .06em; }

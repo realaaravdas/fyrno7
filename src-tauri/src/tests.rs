@@ -186,3 +186,27 @@ fn summary_pdf_roundtrip() {
     let all = pages.join("\n");
     assert!(all.contains("Stochastic Gradient Descent") && all.contains("Adaptive schedules cut loss") && all.contains("PAGE 5"), "{all}");
 }
+
+#[test]
+fn ocr_reads_a_scanned_page_locally() {
+    let png = std::fs::read(format!("{}/tests/fixtures/scan.png", env!("CARGO_MANIFEST_DIR"))).unwrap();
+    let t = std::time::Instant::now();
+    let page = crate::ocr::recognize(&png).expect("ocr");
+    eprintln!("OCR took {:?}:\n{}", t.elapsed(), page.text);
+    let low = page.text.to_lowercase();
+    assert!(low.contains("networks learn representations") && low.contains("english text"), "got: {}", page.text);
+    assert!(page.lines.len() >= 3);
+    // positions are normalised fractions, top-to-bottom
+    assert!(page.lines.iter().all(|l| l.x >= 0.0 && l.y >= 0.0 && l.x + l.w <= 1.01 && l.y + l.h <= 1.01));
+    assert!(page.lines[0].y < page.lines[2].y);
+    // quote verification works on OCR output too
+    let n = crate::textutil::normalize(&page.text);
+    assert!(crate::textutil::locate(&page.text, &n, "learn representations from data").is_some());
+}
+
+#[test]
+fn image_only_pdf_is_flagged_for_ocr() {
+    let pages = extract_pages(&format!("{}/tests/fixtures/scan.pdf", env!("CARGO_MANIFEST_DIR"))).expect("a scan must not crash extraction");
+    assert_eq!(pages.len(), 1);
+    assert!(pages[0].trim().chars().count() < 40, "scan unexpectedly has text: {:?}", pages[0]);
+}

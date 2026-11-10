@@ -15,7 +15,7 @@ const S = {
   settings: { ...DEFAULTS, ...loadJSON("neuron7.settings", {}) },
   prefs: { density: "balanced", level: "grad", ...loadJSON("neuron7.prefs", {}) },
   path: null, name: "", info: null, doc: null, pv: [],
-  result: null, removed: new Set(), hiddenCats: new Set(),
+  result: null, ocr: new Map(), cancelOcr: false, removed: new Set(), hiddenCats: new Set(),
   selected: null, fit: 1, zoom: 1, style: "sharpie", showAnn: true, showAcr: false, tab: "notes",
   models: [], connected: false, running: false, observer: null, ranFor: null,
 };
@@ -88,7 +88,7 @@ async function openPaper(path) {
     const bytes = await backend.readPdf(path);
     const doc = await pdfjs.getDocument({ data: bytes }).promise;
     S.path = path; S.doc = doc; S.name = path.split(/[\\/]/).pop();
-    S.result = null; S.removed.clear(); S.hiddenCats.clear(); S.selected = null; S.zoom = 1; S.ranFor = null;
+    S.result = null; S.ocr = new Map(); S.info = null; S.removed.clear(); S.hiddenCats.clear(); S.selected = null; S.zoom = 1; S.ranFor = null;
     $("#docTitle").textContent = S.name;
     $("#emptyState").hidden = true;
     $("#toolbar").hidden = true;
@@ -97,16 +97,89 @@ async function openPaper(path) {
     $("#paperMeta").hidden = false;
     $("#paperMeta").innerHTML = `<b>${esc(S.name)}</b><span>${doc.numPages} pages · reading text…</span>`;
     updateAnalyzeButton();
-    backend.inspectPdf(path).then((info) => {
-      S.info = info;
-      const warn = info.hasText ? "" : `<span class="warn">No selectable text found. This looks like a scan; run OCR first.</span>`;
-      $("#paperMeta").innerHTML = `<b>${esc(info.title)}</b><span>${info.nPages} pages · ${(info.chars / 1000).toFixed(0)}k characters</span>${warn}`;
-      updateAnalyzeButton();
-    }).catch((e) => toast(String(e), true));
+    backend.inspectPdf(path).then((info) => { S.info = info; showPaperMeta(); updateAnalyzeButton(); }).catch((e) => toast(String(e), true));
   } catch (e) {
     toast(`Could not open that PDF: ${e}`, true);
   }
 }
+
+function showPaperMeta() {
+  const info = S.info; if (!info) return;
+  const pending = (info.ocrPages || []).filter((i) => !S.ocr.has(i)).length;
+  const note = pending
+    ? `<span class="warn">${pending === info.nPages ? "Scanned paper" : `${pending} scanned page${pending > 1 ? "s" : ""}`} detected. Local OCR runs automatically before annotating.</span>`
+    : S.ocr.size ? `<span class="okmsg">OCR finished on ${S.ocr.size} page${S.ocr.size > 1 ? "s" : ""} (done on this computer)</span>` : "";
+  $("#paperMeta").innerHTML = `<b>${esc(info.title)}</b><span>${info.nPages} pages · ${(info.chars / 1000).toFixed(0)}k characters</span>${note}`;
+}
+
+/* ------------------------------------------------------------------ local OCR */
+const OCR_WEIGHT = 0.2; // one OCR page costs about a fifth of one LLM step, used only to split the bar
+async function ocrOnePage(i) {
+  const page = S.pv[i].page;
+  const v1 = page.getViewport({ scale: 1 });
+  const scale = Math.min(4, Math.max(1.5, 2300 / Math.max(v1.width, v1.height)));
+  const vp = page.getViewport({ scale });
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(vp.width); canvas.height = Math.round(vp.height);
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise;
+  const blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
+  return backend.ocrPage(new Uint8Array(await blob.arrayBuffer()));
+}
+
+/** OCR every page without embedded text. Returns the share of the progress bar it used. */
+async function runOcr() {
+  const need = (S.info?.ocrPages || []).filter((i) => !S.ocr.has(i));
+  PR.ocrShare = 0;
+  if (!need.length) return;
+  const estLlmSteps = Math.max(3, Math.ceil((S.doc.numPages * 3200) / S.settings.chunkChars) + 3);
+  const share = (need.length * OCR_WEIGHT) / (need.length * OCR_WEIGHT + estLlmSteps);
+  PR.ocrShare = share; S.cancelOcr = false;
+  for (let k = 0; k < need.length; k++) {
+    if (S.cancelOcr) throw new Error("Cancelled");
+    const i = need[k], t0 = performance.now();
+    progStep((share * k) / need.length, share / need.length, `Local OCR: page ${i + 1} (${k + 1} of ${need.length})`, PR.ocrMs);
+    const res = await ocrOnePage(i);
+    S.ocr.set(i, res);
+    const d = performance.now() - t0; PR.ocrMs = PR.ocrMs ? 0.5 * PR.ocrMs + 0.5 * d : d;
+  }
+  await backend.setPageTexts(S.path, need.map((i) => [i, S.ocr.get(i).text]));
+  S.info = await backend.inspectPdf(S.path); showPaperMeta();
+  for (const pv of S.pv) if (S.ocr.has(pv.i) && pv.rendered) { pv.model = await buildModel(pv.page, S.ocr.get(pv.i)); pv.rects = null; }
+  progStep(share, 0, "Preparing…", 1000);
+}
+
+/* ------------------------------------------------------------------ progress (real + estimated, 3 decimals) */
+const PR = { committed: 0, span: 0, start: 0, expect: 3000, shown: 0, timer: null, ocrShare: 0, ocrMs: 1800, stepMs: 25000, lastDone: null, lastAt: 0, t0: 0, msg: "" };
+function progStart() {
+  Object.assign(PR, { committed: 0, span: 0, shown: 0, ocrShare: 0, lastDone: null, t0: performance.now(), start: performance.now(), msg: "Starting…", expect: 1500 });
+  clearInterval(PR.timer); PR.timer = setInterval(progTick, 80); progTick();
+}
+function progStep(committed, span, msg, expectMs) {
+  Object.assign(PR, { committed, span, start: performance.now(), msg, expect: Math.max(300, expectMs || 3000) });
+}
+function progAnalysis(p) {
+  const now = performance.now(), share = PR.ocrShare, total = Math.max(1, p.total);
+  if (PR.lastDone != null && p.done > PR.lastDone) { const d = (now - PR.lastAt) / (p.done - PR.lastDone); PR.stepMs = 0.6 * PR.stepMs + 0.4 * d; }
+  PR.lastDone = p.done; PR.lastAt = now;
+  progStep(share + (1 - share) * (p.done / total), p.done >= total ? 0 : (1 - share) / total, p.message, PR.stepMs);
+}
+function progTick() {
+  const el = performance.now() - PR.start;
+  const part = PR.span * (1 - Math.exp(-el / PR.expect)) * 0.96; // creeps toward, but never reaches, the end of the current step
+  PR.shown = Math.min(99.999, Math.max(PR.shown, (PR.committed + part) * 100));
+  $("#barFill").style.width = PR.shown.toFixed(3) + "%";
+  $("#progPct").textContent = PR.shown.toFixed(3) + "%";
+  $("#progText").textContent = PR.msg;
+  const spent = performance.now() - PR.t0, frac = PR.shown / 100;
+  $("#progEta").textContent = spent > 4000 && frac > 0.02 ? "~" + fmtDur((spent / frac) * (1 - frac)) + " left" : "estimating…";
+}
+function progEnd(ok) {
+  clearInterval(PR.timer);
+  if (ok) { $("#barFill").style.width = "100%"; $("#progPct").textContent = "100.000%"; }
+}
+const fmtDur = (ms) => { const s = Math.round(ms / 1000); return s >= 60 ? `${Math.floor(s / 60)}m ${String(s % 60).padStart(2, "0")}s` : `${s}s`; };
 
 async function buildPages() {
   const host = $("#pages");
@@ -150,7 +223,7 @@ async function renderPage(pv) {
     canvas.style.width = `${Math.round(pv.vp.width)}px`; canvas.style.height = `${Math.round(pv.vp.height)}px`;
     await pv.page.render({ canvasContext: canvas.getContext("2d"), viewport: pv.vp, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise;
     pv.sheet.replaceChildren(canvas);
-    pv.model = await buildModel(pv.page);
+    pv.model = await buildModel(pv.page, S.ocr.get(pv.i));
     pv.rendered = true;
     drawOverlay(pv);
   } catch (e) { console.error("render page", e); }
@@ -233,7 +306,7 @@ function currentOptions() {
   };
 }
 function updateAnalyzeButton() {
-  const ok = S.doc && S.info?.hasText !== false && !S.running;
+  const ok = S.doc && !S.running;
   $("#btnAnalyze").disabled = !ok;
   $("#btnAnalyze").textContent = S.running ? "Working…" : S.connected ? "Annotate paper" : "Annotate paper (model offline)";
 }
@@ -246,9 +319,13 @@ async function analyze() {
   if (!S.settings.model) { toast("No model is loaded in your server. Load a Gemma model, then try again.", true); return openSettings(); }
 
   S.running = true; updateAnalyzeButton();
-  $("#btnCancel").hidden = false; $("#progress").hidden = false; setProgress(0, 1, "Starting…");
+  $("#btnCancel").hidden = false; $("#progress").hidden = false; progStart();
+  let ok = false;
   try {
-    const res = await backend.analyze({ path: S.path, settings: S.settings, options: o }, (p) => setProgress(p.done, p.total, p.message));
+    await runOcr();
+    progStep(PR.ocrShare, 0, "Connecting to your local model…", 1500);
+    const res = await backend.analyze({ path: S.path, settings: S.settings, options: o }, progAnalysis);
+    ok = true;
     S.result = res; S.removed.clear(); S.hiddenCats.clear(); S.selected = null;
     S.ranFor = { sharpie: $("#modeSharpie").checked, pro: o.professional, companion: o.companion };
     S.style = S.ranFor.sharpie ? "sharpie" : "pro";
@@ -263,12 +340,9 @@ async function analyze() {
   } catch (e) {
     if (!String(e).includes("Cancelled")) toast(String(e), true, 9000);
   } finally {
-    S.running = false; $("#btnCancel").hidden = true; $("#progress").hidden = true; updateAnalyzeButton();
+    progEnd(ok);
+    S.running = false; $("#btnCancel").hidden = true; setTimeout(() => { if (!S.running) $("#progress").hidden = true; }, ok ? 900 : 0); updateAnalyzeButton();
   }
-}
-function setProgress(done, total, msg) {
-  $("#barFill").style.width = `${Math.max(4, (done / Math.max(1, total)) * 100)}%`;
-  $("#progText").textContent = msg;
 }
 
 function setupToolbar() {
@@ -397,7 +471,7 @@ function bind() {
 
   $("#btnTogglePanel").onclick = () => $("#panel").classList.toggle("hidden");
   $("#btnAnalyze").onclick = analyze;
-  $("#btnCancel").onclick = () => backend.cancel();
+  $("#btnCancel").onclick = () => { S.cancelOcr = true; backend.cancel(); };
 
   for (const [id, key] of [["segDensity", "density"], ["segLevel", "level"]]) {
     $$("button", $("#" + id)).forEach((b) => {

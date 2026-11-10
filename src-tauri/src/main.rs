@@ -3,6 +3,7 @@
 mod acronyms;
 mod analysis;
 mod llm;
+mod ocr;
 mod pdfout;
 mod prompts;
 mod textutil;
@@ -60,11 +61,18 @@ fn read_pdf(path: String) -> Result<tauri::ipc::Response, String> {
 async fn inspect_pdf(state: State<'_, AppState>, path: String) -> Result<PaperInfo, String> {
     let pages = pages_for(&state, &path).await?;
     let chars: usize = pages.iter().map(|p| p.trim().len()).sum();
+    let ocr_pages: Vec<u32> = pages
+        .iter()
+        .enumerate()
+        .filter(|(_, p)| p.trim().chars().count() < 40)
+        .map(|(i, _)| i as u32)
+        .collect();
     Ok(PaperInfo {
         title: analysis::guess_title(&pages),
         n_pages: pages.len() as u32,
         chars,
         has_text: chars > 200,
+        ocr_pages,
     })
 }
 
@@ -83,6 +91,35 @@ async fn analyze(
         let _ = app.emit("progress", p);
     };
     analysis::run(&cb, req, pages, state.cancel.clone()).await
+}
+
+/// OCR one rendered page image (raw PNG bytes in the request body). Runs fully locally.
+#[tauri::command]
+async fn ocr_page(request: tauri::ipc::Request<'_>) -> Result<ocr::OcrPage, String> {
+    let tauri::ipc::InvokeBody::Raw(bytes) = request.body() else {
+        return Err("expected raw image bytes".into());
+    };
+    let bytes = bytes.clone();
+    tauri::async_runtime::spawn_blocking(move || ocr::recognize(&bytes))
+        .await
+        .map_err(|e| e.to_string())?
+}
+
+/// Store OCR text for pages that had no embedded text, so analysis can use it.
+#[tauri::command]
+fn set_page_texts(state: State<'_, AppState>, path: String, pages: Vec<(u32, String)>) -> Result<(), String> {
+    let mut cache = state.cache.lock().unwrap();
+    match cache.as_mut() {
+        Some((p, texts)) if *p == path => {
+            for (i, t) in pages {
+                if let Some(slot) = texts.get_mut(i as usize) {
+                    *slot = t;
+                }
+            }
+            Ok(())
+        }
+        _ => Err("paper is not open in the backend".into()),
+    }
 }
 
 #[tauri::command]
@@ -110,6 +147,8 @@ fn main() {
             inspect_pdf,
             analyze,
             cancel_analysis,
+            ocr_page,
+            set_page_texts,
             save_text_file,
             export_summary_pdf
         ])
