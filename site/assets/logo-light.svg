@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 500 178" role="img" aria-label="neuron7">
+  <title>neuron7</title>
+  <defs>
+    <linearGradient id="n7g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="480" y2="160">
+      <stop offset="0" stop-color="#4f46e5"/>
+      <stop offset="1" stop-color="#c026d3"/>
+    </linearGradient>
+  </defs>
+  <!-- "neuron": soft geometric letterforms, 11-unit round-capped stroke -->
+  <g fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.500 94V36M5.500 56.500A20.500 20.500 0 0 1 46.500 56.500V94"/>
+    <path d="M71.500 65H129.500M129.500 65A29 29 0 1 0 122.700 83.600"/>
+    <path d="M154.500 36V73.500A20.500 20.500 0 0 0 195.500 73.500M195.500 36V94"/>
+    <path d="M220.500 94V36M220.500 64C220.500 45 233 36.500 250 36.500"/>
+    <circle cx="304" cy="65" r="29"/>
+    <path d="M358 94V36M358 56.500A20.500 20.500 0 0 1 399 56.500V94"/>
+  </g>
+  <!-- the 7: the bar sweeps over the whole word, then swoops down into a tapering tail -->
+  <path fill="url(#n7g)" d="M5.500 0H440C466 0 484 14 480 42C474 84 440 126 392 162C420 122 438 86 441 56C443 34 434 11 408 11H5.500A5.500 5.500 0 0 1 5.500 0Z"/>
+</svg>

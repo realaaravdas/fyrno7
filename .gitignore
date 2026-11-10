@@ -1,3 +1,4 @@
 target/
 src-tauri/gen/
 *.log
+dist/

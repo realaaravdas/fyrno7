@@ -77,3 +77,7 @@ ui/
 ```
 
 Previewing `ui/` in a normal browser over `http://` uses a mock model, handy for UI work.
+
+## Website
+
+A static landing page lives in `site/` (open `site/index.html` through any static server, or enable GitHub Pages on the `/site` folder). Logos are in `site/assets/` (`logo.svg`, `logo-light.svg` for dark backgrounds, `icon.svg`).
