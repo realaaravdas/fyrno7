@@ -71,7 +71,7 @@ jobs:
         shell: bash
         run: |
           B=$(find src-tauri/target -type d -path "*release/bundle" | head -1)
-          echo "bundle dir: $B"; ls -R "$B" | head -40
+          echo "bundle dir: $B"; find "$B" -maxdepth 2 -type f | sort
           case "$RUNNER_OS" in
             macOS)
               cp "$B"/dmg/*.dmg neuron7-macos-universal.dmg
