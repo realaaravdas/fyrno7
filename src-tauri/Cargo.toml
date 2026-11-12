@@ -1,6 +1,6 @@
 [package]
 name = "fyrno7"
-version = "0.4.0"
+version = "0.5.0"
 description = "Annotate research papers like a human reader, powered by a local LLM"
 edition = "2021"
 
