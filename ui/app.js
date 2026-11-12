@@ -1,6 +1,6 @@
 import * as pdfjs from "./vendor/pdf.min.mjs";
 import { buildModel, findQuote, findWord, rectsFor } from "./pdfpage.js";
-import { addDefs, drawSharpie, drawPro, drawAcronyms, CAT_COLORS, CAT_LABEL } from "./render.js";
+import { addDefs, drawSharpie, drawPro, drawAcronyms, catUI, CAT_LABEL } from "./render.js";
 import { backend } from "./backend.js";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdf.worker.min.mjs", import.meta.url).href;
@@ -13,7 +13,7 @@ const G = 160; // margin gutter width (px) on each side of a page
 const DEFAULTS = { baseUrl: "http://localhost:1234", apiKey: "", model: "", temperature: 0.3, chunkChars: 9000, maxTokens: 3500 };
 const S = {
   settings: { ...DEFAULTS, ...loadJSON("fyrno7.settings", {}) },
-  prefs: { density: "balanced", level: "grad", ...loadJSON("fyrno7.prefs", {}) },
+  prefs: { density: "balanced", level: "grad", theme: "dark", ...loadJSON("fyrno7.prefs", {}) },
   path: null, name: "", info: null, doc: null, pv: [],
   result: null, ocr: new Map(), cancelOcr: false, removed: new Set(), hiddenCats: new Set(),
   selected: null, fit: 1, zoom: 1, style: "sharpie", showAnn: true, showAcr: false, tab: "notes",
@@ -22,6 +22,15 @@ const S = {
 
 function loadJSON(k, d) { if (backend.demo) return d; try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }
 function saveJSON(k, v) { if (backend.demo) return; try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+
+/* appearance: dark by default, or light, or follow the system */
+const sysDark = matchMedia("(prefers-color-scheme: dark)");
+function applyTheme() {
+  const t = S.prefs.theme || "dark";
+  document.documentElement.dataset.theme = t === "system" ? (sysDark.matches ? "dark" : "light") : t;
+}
+applyTheme();
+sysDark.addEventListener("change", () => { if (S.prefs.theme === "system") { applyTheme(); redrawAll(); renderTab(); } });
 
 function toast(msg, err = false, ms = 4500) {
   const t = document.createElement("div");
@@ -66,6 +75,7 @@ function fillModelSelect() {
 
 /* ------------------------------------------------------------------ settings modal */
 function openSettings() {
+  $("#sTheme").value = S.prefs.theme || "dark";
   $("#sBase").value = S.settings.baseUrl; $("#sKey").value = S.settings.apiKey;
   $("#sTemp").value = S.settings.temperature; $("#sChunk").value = S.settings.chunkChars; $("#sTokens").value = S.settings.maxTokens;
   fillModelSelect();
@@ -375,10 +385,10 @@ function renderTab() {
 function renderNotes(body, R) {
   if (!R.annotations.length) { body.innerHTML = `<div class="placeholder">No annotations in this run.<br>Enable Sharpie or Professional mode and annotate again.</div>`; return; }
   const cats = [...new Set(R.annotations.map((a) => a.category))];
-  const chips = cats.map((c) => `<button class="fchip ${S.hiddenCats.has(c) ? "" : "on"}" data-cat="${c}" style="--c:${CAT_COLORS[c]}"><i></i>${CAT_LABEL[c]}</button>`).join("");
+  const chips = cats.map((c) => `<button class="fchip ${S.hiddenCats.has(c) ? "" : "on"}" data-cat="${c}" style="--c:${catUI(c)}"><i></i>${CAT_LABEL[c]}</button>`).join("");
   const list = R.annotations.filter((a) => !S.removed.has(a.id) && !S.hiddenCats.has(a.category));
   body.innerHTML = `<div class="filters">${chips}</div>` + (list.map((a) => `
-    <div class="ann ${S.selected === a.id ? "sel" : ""}" data-id="${a.id}" style="--c:${CAT_COLORS[a.category]}">
+    <div class="ann ${S.selected === a.id ? "sel" : ""}" data-id="${a.id}" style="--c:${catUI(a.category)}">
       <div class="meta"><span class="cat">${CAT_LABEL[a.category]}</span><span>p. ${a.page}</span><span>${esc(a.kind)}</span>${a.severity === "major" ? '<span style="color:var(--danger);font-weight:700">major</span>' : ""}<button class="x" title="Remove annotation" data-del="${a.id}">✕</button></div>
       <q>${esc(a.quote)}</q>
       ${a.detail ? `<p>${esc(a.detail)}</p>` : ""}${a.note ? `<p ${a.detail ? 'style="color:var(--muted)"' : ""}>${a.detail ? "✎ " : ""}${esc(a.note)}</p>` : ""}
@@ -472,6 +482,7 @@ function bind() {
   $("#btnTest").onclick = async () => { readSettingsForm(); await refreshConnection(false); };
   $("#btnRefresh").onclick = $("#btnTest").onclick;
   $("#sModel").onchange = () => (S.settings.model = $("#sModel").value);
+  $("#sTheme").onchange = () => { S.prefs.theme = $("#sTheme").value; saveJSON("fyrno7.prefs", S.prefs); applyTheme(); redrawAll(); renderTab(); };
   $$("[data-preset]").forEach((b) => (b.onclick = () => { $("#sBase").value = b.dataset.preset === "ollama" ? "http://localhost:11434" : "http://localhost:1234"; $("#btnTest").click(); }));
 
   $("#btnTogglePanel").onclick = () => $("#panel").classList.toggle("hidden");
@@ -532,7 +543,6 @@ async function init() {
 let runPromise = null;
 const runOnce = () => (runPromise ||= analyze().finally(() => (runPromise = null)));
 function setupDemo() {
-  document.documentElement.dataset.theme = "light";
   $("#demoBar").hidden = false;
   for (const id of ["modeSharpie", "modePro", "modeCompanion", "optTldr", "optAcr"]) $("#" + id).checked = true;
   const params = new URLSearchParams(location.search);

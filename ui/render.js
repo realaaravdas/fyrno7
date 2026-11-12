@@ -5,6 +5,12 @@ export const CAT_COLORS = {
   claim: "#3d5a80", method: "#5f6b3a", result: "#2f6b4f", limitation: "#b06a1a",
   definition: "#3f6f73", question: "#8a4a62", reference: "#6b6358", insight: "#54516b",
 };
+// Category colours on the white page (highlights) use CAT_COLORS. The dark app chrome needs lighter tints of the same hues.
+export const CAT_UI_DARK = {
+  claim: "#86a9d6", method: "#a8b873", result: "#6fc79a", limitation: "#e2a553",
+  definition: "#6fbcc0", question: "#d891ad", reference: "#a39d92", insight: "#9aa3c7",
+};
+export const catUI = (c) => (document.documentElement.dataset.theme === "light" ? CAT_COLORS[c] : CAT_UI_DARK[c]) || "#a39d92";
 export const CAT_LABEL = {
   claim: "Claim", method: "Method", result: "Result", limitation: "Limitation",
   definition: "Definition", question: "Question", reference: "Reference", insight: "Insight",

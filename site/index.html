@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>fyrno7: annotate research papers with a local model</title>
   <meta name="description" content="fyrno7 is a free, open source desktop app that reads research papers with a model running on your computer and annotates them like a human reader. Windows, macOS and Linux." />
-  <meta name="theme-color" content="#f4efe6" />
+  <meta name="theme-color" content="#0b0a09" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -56,7 +56,7 @@
   <section class="demo" id="demo" aria-labelledby="demo-h">
     <div class="wrap">
       <div class="demo-head">
-        <h2 id="demo-h">A working demo</h2>
+        <div><span class="idx"><b>01</b>Demo</span><h2 id="demo-h">A working demo</h2></div>
         <p>This is the real interface running in your browser on a fictional sample paper. The annotations are pre-written and the progress steps are simulated. In the desktop app, your local model produces them.</p>
       </div>
       <div class="demo-frame" id="demoBox">
@@ -79,6 +79,7 @@
   <section class="section" id="features" aria-labelledby="features-h">
     <div class="wrap split">
       <header>
+        <span class="idx"><b>02</b>Features</span>
         <h2 id="features-h">What it produces</h2>
         <p>Choose any combination. One pass over the paper generates everything, and you can switch between views afterwards.</p>
       </header>
@@ -97,7 +98,7 @@
 
   <section class="section" aria-labelledby="how-h">
     <div class="wrap split">
-      <header><h2 id="how-h">How it works</h2></header>
+      <header><span class="idx"><b>03</b>Method</span><h2 id="how-h">How it works</h2></header>
       <ol class="steps">
         <li><div><h3>Start a model server</h3><p>Run LM Studio or Ollama with a model such as Gemma 3. fyrno7 talks to any server that speaks the OpenAI API.</p></div></li>
         <li><div><h3>Open a paper</h3><p>Drop in a PDF. Pages without selectable text are read with OCR first, and the paper is split into chunks that fit your model.</p></div></li>
@@ -109,7 +110,7 @@
 
   <section class="section" aria-labelledby="local-h">
     <div class="wrap split">
-      <header><h2 id="local-h">Your papers stay on your computer</h2></header>
+      <header><span class="idx"><b>04</b>Privacy</span><h2 id="local-h">Your papers stay on your computer</h2></header>
       <div>
         <p>fyrno7 has no accounts and sends no telemetry. The only network connection the app makes is to the model server address you set, which is on your own machine by default. OCR runs inside the app.</p>
         <p>If you point fyrno7 at a remote server, the text of the paper goes to that server, so choose it with that in mind. The <a href="privacy.html">Privacy Policy</a> lists exactly what is stored and where.</p>
@@ -120,6 +121,7 @@
 
   <section class="section" id="download" aria-labelledby="download-h">
     <div class="wrap">
+      <span class="idx"><b>05</b>Download</span>
       <h2 id="download-h">Download</h2>
       <p class="fine" style="margin-top:10px">Free. The files below come from the latest release on GitHub.</p>
       <table class="dl-table">
@@ -207,7 +209,7 @@ cargo run --release</code><button class="btn small copy-btn" type="button" data-
 
   <section class="section" id="faq" aria-labelledby="faq-h">
     <div class="wrap split">
-      <header><h2 id="faq-h">Questions</h2></header>
+      <header><span class="idx"><b>06</b>FAQ</span><h2 id="faq-h">Questions</h2></header>
       <div class="disclose" data-exclusive>
         <details><summary>Is my paper kept private?</summary><div><p>fyrno7 only talks to the model server you configure, which normally runs on your own computer. There are no accounts, no analytics and no cloud calls. If you point it at a remote server, the text goes there.</p></div></details>
         <details><summary>Do I have to use Gemma?</summary><div><p>No. Gemma 3 is a good default, and any chat model behind an OpenAI compatible endpoint works. Larger models usually give sharper annotations.</p></div></details>
