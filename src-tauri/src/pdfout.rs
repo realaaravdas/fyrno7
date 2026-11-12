@@ -325,7 +325,7 @@ pub fn render(d: &SummaryExport) -> Vec<u8> {
         let mut content = p.clone();
         content.push_str(&format!(
             "BT /F1 8 Tf 0.55 0.58 0.65 rg {:.2} 30 Td ({}) Tj ET\nBT /F1 8 Tf 0.55 0.58 0.65 rg {:.2} 30 Td ({}) Tj ET\n",
-            M, esc(&format!("neuron7  |  {short}")),
+            M, esc(&format!("fyrno7  |  {short}")),
             W - M - 40.0, esc(&format!("Page {} of {}", i + 1, n)),
         ));
         obj(&mut out, 0, &format!("<< /Length {} >>\nstream\n{}endstream", content.len(), content));

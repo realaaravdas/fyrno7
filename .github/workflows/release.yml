@@ -26,7 +26,7 @@ jobs:
       - name: Create release if it does not exist
         run: |
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" \
-            --title "neuron7 $TAG" --notes-file .github/release-notes.md
+            --title "fyrno7 $TAG" --notes-file .github/release-notes.md
 
   build:
     needs: release
@@ -74,16 +74,16 @@ jobs:
           echo "bundle dir: $B"; find "$B" -maxdepth 2 -type f | sort
           case "$RUNNER_OS" in
             macOS)
-              cp "$B"/dmg/*.dmg neuron7-macos-universal.dmg
-              gh release upload "$TAG" neuron7-macos-universal.dmg --clobber ;;
+              cp "$B"/dmg/*.dmg fyrno7-macos-universal.dmg
+              gh release upload "$TAG" fyrno7-macos-universal.dmg --clobber ;;
             Linux)
-              cp "$B"/appimage/*.AppImage neuron7-linux-x86_64.AppImage
-              cp "$B"/deb/*.deb neuron7-linux-amd64.deb
-              cp "$B"/rpm/*.rpm neuron7-linux-x86_64.rpm
-              gh release upload "$TAG" neuron7-linux-x86_64.AppImage neuron7-linux-amd64.deb neuron7-linux-x86_64.rpm --clobber ;;
+              cp "$B"/appimage/*.AppImage fyrno7-linux-x86_64.AppImage
+              cp "$B"/deb/*.deb fyrno7-linux-amd64.deb
+              cp "$B"/rpm/*.rpm fyrno7-linux-x86_64.rpm
+              gh release upload "$TAG" fyrno7-linux-x86_64.AppImage fyrno7-linux-amd64.deb fyrno7-linux-x86_64.rpm --clobber ;;
             Windows)
-              cp src-tauri/target/release/neuron7.exe neuron7-windows-x64.exe
-              cp "$B"/nsis/*-setup.exe neuron7-windows-x64-setup.exe
-              cp "$B"/msi/*.msi neuron7-windows-x64.msi
-              gh release upload "$TAG" neuron7-windows-x64.exe neuron7-windows-x64-setup.exe neuron7-windows-x64.msi --clobber ;;
+              cp src-tauri/target/release/fyrno7.exe fyrno7-windows-x64.exe
+              cp "$B"/nsis/*-setup.exe fyrno7-windows-x64-setup.exe
+              cp "$B"/msi/*.msi fyrno7-windows-x64.msi
+              gh release upload "$TAG" fyrno7-windows-x64.exe fyrno7-windows-x64-setup.exe fyrno7-windows-x64.msi --clobber ;;
           esac

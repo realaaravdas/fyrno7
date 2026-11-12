@@ -153,5 +153,5 @@ fn main() {
             export_summary_pdf
         ])
         .run(tauri::generate_context!())
-        .expect("error while running neuron7");
+        .expect("error while running fyrno7");
 }

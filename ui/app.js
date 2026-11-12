@@ -12,8 +12,8 @@ const G = 160; // margin gutter width (px) on each side of a page
 
 const DEFAULTS = { baseUrl: "http://localhost:1234", apiKey: "", model: "", temperature: 0.3, chunkChars: 9000, maxTokens: 3500 };
 const S = {
-  settings: { ...DEFAULTS, ...loadJSON("neuron7.settings", {}) },
-  prefs: { density: "balanced", level: "grad", ...loadJSON("neuron7.prefs", {}) },
+  settings: { ...DEFAULTS, ...loadJSON("fyrno7.settings", {}) },
+  prefs: { density: "balanced", level: "grad", ...loadJSON("fyrno7.prefs", {}) },
   path: null, name: "", info: null, doc: null, pv: [],
   result: null, ocr: new Map(), cancelOcr: false, removed: new Set(), hiddenCats: new Set(),
   selected: null, fit: 1, zoom: 1, style: "sharpie", showAnn: true, showAcr: false, tab: "notes",
@@ -39,7 +39,7 @@ async function refreshConnection(quiet = true) {
     S.connected = true;
     if (!S.models.includes(S.settings.model)) {
       S.settings.model = S.models.find((m) => /gemma/i.test(m)) || S.models[0] || "";
-      saveJSON("neuron7.settings", S.settings);
+      saveJSON("fyrno7.settings", S.settings);
     }
     dot.className = "dot ok";
     txt.textContent = S.settings.model ? shortModel(S.settings.model) : "Connected · no model loaded";
@@ -463,7 +463,7 @@ function bind() {
   $("#btnSettings").onclick = openSettings; $("#connPill").onclick = openSettings;
   $("#closeSettings").onclick = () => ($("#settingsModal").hidden = true);
   $("#settingsModal").addEventListener("mousedown", (e) => { if (e.target.id === "settingsModal") $("#settingsModal").hidden = true; });
-  $("#btnSaveSettings").onclick = async () => { readSettingsForm(); saveJSON("neuron7.settings", S.settings); await refreshConnection(false); if (S.connected) { $("#settingsModal").hidden = true; toast("Settings saved."); } };
+  $("#btnSaveSettings").onclick = async () => { readSettingsForm(); saveJSON("fyrno7.settings", S.settings); await refreshConnection(false); if (S.connected) { $("#settingsModal").hidden = true; toast("Settings saved."); } };
   $("#btnTest").onclick = async () => { readSettingsForm(); await refreshConnection(false); };
   $("#btnRefresh").onclick = $("#btnTest").onclick;
   $("#sModel").onchange = () => (S.settings.model = $("#sModel").value);
@@ -476,12 +476,12 @@ function bind() {
   for (const [id, key] of [["segDensity", "density"], ["segLevel", "level"]]) {
     $$("button", $("#" + id)).forEach((b) => {
       b.classList.toggle("on", b.dataset.v === S.prefs[key]);
-      b.onclick = () => { S.prefs[key] = b.dataset.v; saveJSON("neuron7.prefs", S.prefs); $$("button", $("#" + id)).forEach((x) => x.classList.toggle("on", x === b)); };
+      b.onclick = () => { S.prefs[key] = b.dataset.v; saveJSON("fyrno7.prefs", S.prefs); $$("button", $("#" + id)).forEach((x) => x.classList.toggle("on", x === b)); };
     });
   }
   for (const id of ["modeSharpie", "modePro", "modeCompanion", "optTldr", "optAcr"]) {
     const saved = S.prefs[id]; if (saved !== undefined) $("#" + id).checked = saved;
-    $("#" + id).onchange = () => { S.prefs[id] = $("#" + id).checked; saveJSON("neuron7.prefs", S.prefs); };
+    $("#" + id).onchange = () => { S.prefs[id] = $("#" + id).checked; saveJSON("fyrno7.prefs", S.prefs); };
   }
 
   $$("#segStyle button").forEach((b) => (b.onclick = () => { S.style = b.dataset.v; $$("#segStyle button").forEach((x) => x.classList.toggle("on", x === b)); redrawAll(); }));

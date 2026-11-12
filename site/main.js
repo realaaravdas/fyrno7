@@ -187,9 +187,9 @@
 
   /* ---------- detect OS for the primary download button ---------- */
   (function () {
-    const ua = navigator.userAgent, R = "https://github.com/realaaravdas/neuron7/releases/latest/download/";
+    const ua = navigator.userAgent, R = "https://github.com/realaaravdas/fyrno7/releases/latest/download/";
     const os = /Mac/i.test(ua) && !/iPhone|iPad/i.test(ua) ? "mac" : /Linux|X11/i.test(ua) && !/Android/i.test(ua) ? "linux" : "windows";
-    const map = { windows: ["Windows", "neuron7-windows-x64-setup.exe"], mac: ["macOS", "neuron7-macos-universal.dmg"], linux: ["Linux", "neuron7-linux-x86_64.AppImage"] };
+    const map = { windows: ["Windows", "fyrno7-windows-x64-setup.exe"], mac: ["macOS", "fyrno7-macos-universal.dmg"], linux: ["Linux", "fyrno7-linux-x86_64.AppImage"] };
     const p = $("#dlPrimary"); if (!p) return;
     p.href = R + map[os][1]; $("#dlLabel").textContent = "Download for " + map[os][0];
     $(`.os[data-os="${os}"]`)?.classList.add("me");

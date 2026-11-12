@@ -1,4 +1,4 @@
-# neuron7
+# fyrno7
 
 A desktop app that reads a research paper and marks it up the way a person would, using a **local** LLM
 (Gemma or anything else you can run). Nothing leaves your computer.
@@ -25,11 +25,11 @@ shown, then located on the rendered page.
 
 ## Download
 
-Pre-built Windows (installer, `.msi`, portable `.exe`), macOS (`.dmg`, Apple Silicon + Intel) and Linux (AppImage, `.deb`, `.rpm`) builds are attached to each [release](https://github.com/realaaravdas/neuron7/releases). They are built by GitHub Actions (`.github/workflows/release.yml`) and are not code-signed, so Windows SmartScreen and macOS Gatekeeper show a one-time warning (see the release notes).
+Pre-built Windows (installer, `.msi`, portable `.exe`), macOS (`.dmg`, Apple Silicon + Intel) and Linux (AppImage, `.deb`, `.rpm`) builds are attached to each [release](https://github.com/realaaravdas/fyrno7/releases). They are built by GitHub Actions (`.github/workflows/release.yml`) and are not code-signed, so Windows SmartScreen and macOS Gatekeeper show a one-time warning (see the release notes).
 
 ## 1. Run a local model
 
-neuron7 talks to any **OpenAI-compatible** server.
+fyrno7 talks to any **OpenAI-compatible** server.
 
 ### LM Studio (easiest)
 1. Install [LM Studio](https://lmstudio.ai) and search for **gemma 3** (12B or 27B for quality, 4B for speed).
@@ -40,11 +40,11 @@ neuron7 talks to any **OpenAI-compatible** server.
 ```bash
 ollama pull gemma3
 ```
-Keep Ollama running and use `http://localhost:11434` in neuron7's settings.
+Keep Ollama running and use `http://localhost:11434` in fyrno7's settings.
 
 Also works with llama.cpp `llama-server`, Jan, KoboldCpp, vLLM, etc.
 
-In neuron7: **Settings → Quick setup → Detect models**, choose your model, and the status pill turns green.
+In fyrno7: **Settings → Quick setup → Detect models**, choose your model, and the status pill turns green.
 
 **Tips.** Smaller models return less reliable JSON; the parser is forgiving and retries once, and a failed chunk only
 costs you that chunk. If you see a context-window error, lower *Chunk size* in Settings or raise the model's context

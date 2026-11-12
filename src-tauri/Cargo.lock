@@ -957,6 +957,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "fyrno7"
+version = "0.3.0"
+dependencies = [
+ "image",
+ "ocrs",
+ "once_cell",
+ "pdf-extract",
+ "regex",
+ "reqwest 0.12.28",
+ "rten",
+ "rten-imageproc",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-dialog",
+ "tokio",
+]
+
+[[package]]
 name = "gdk"
 version = "0.18.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2006,26 +2026,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ee6cda3051665f1fb8d9e08fc35c96d5a244fb1be711a03b71118828afc9a873"
 dependencies = [
  "jni-sys 0.3.1",
-]
-
-[[package]]
-name = "neuron7"
-version = "0.2.0"
-dependencies = [
- "image",
- "ocrs",
- "once_cell",
- "pdf-extract",
- "regex",
- "reqwest 0.12.28",
- "rten",
- "rten-imageproc",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-dialog",
- "tokio",
 ]
 
 [[package]]

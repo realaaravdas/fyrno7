@@ -179,7 +179,7 @@ fn summary_pdf_roundtrip() {
     };
     let bytes = crate::pdfout::render(&data);
     assert!(bytes.starts_with(b"%PDF-1.4"));
-    let path = std::env::temp_dir().join("neuron7-summary-test.pdf");
+    let path = std::env::temp_dir().join("fyrno7-summary-test.pdf");
     std::fs::write(&path, &bytes).unwrap();
     let pages = extract_pages(path.to_str().unwrap()).expect("our own PDF must parse");
     assert!(pages.len() >= 2, "40 annotations should span several pages, got {}", pages.len());

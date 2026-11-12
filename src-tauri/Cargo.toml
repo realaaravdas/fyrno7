@@ -1,6 +1,6 @@
 [package]
-name = "neuron7"
-version = "0.2.0"
+name = "fyrno7"
+version = "0.3.0"
 description = "Annotate research papers like a human reader, powered by a local LLM"
 edition = "2021"
 
