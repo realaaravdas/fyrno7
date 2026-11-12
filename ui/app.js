@@ -530,13 +530,49 @@ function setupDemo() {
   document.documentElement.dataset.theme = "light";
   $("#demoBar").hidden = false;
   for (const id of ["modeSharpie", "modePro", "modeCompanion", "optTldr", "optAcr"]) $("#" + id).checked = true;
+  const params = new URLSearchParams(location.search);
   const ready = openPaper(backend.samplePath);
-  if (new URLSearchParams(location.search).has("autorun")) ready.then(runOnce);
+  const bar = $("#demoBar"), manualText = bar.innerHTML;
+  let tour = null;
+
+  /* automatic tour: plays until the visitor interacts, then never again */
+  const setStyle = (v) => { const b = $(`#segStyle [data-v="${v}"]`); if (b && !b.disabled && !b.classList.contains("on")) b.click(); };
+  const showTab = (t) => { S.tab = t; renderTab(); };
+  const steps = [
+    [3400, () => { setStyle("sharpie"); showTab("notes"); select(3, "list"); }],
+    [3000, () => select(7, "list")],
+    [3600, () => { setStyle("pro"); select(10, "list"); }],
+    [3800, () => showTab("tldr")],
+    [3200, () => showTab("acr")],
+    [3800, () => showTab("doc")],
+    [2400, () => { setStyle("sharpie"); showTab("notes"); $("#viewer").scrollTo({ top: 0, behavior: "smooth" }); }],
+  ];
+  const stopTour = () => {
+    if (!tour) return;
+    clearTimeout(tour.timer); tour = null;
+    bar.innerHTML = manualText;
+  };
+  const startTour = () => {
+    if (!S.result || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    tour = { timer: 0 };
+    bar.innerHTML = "<b>Demo</b> An automatic tour of a fictional sample paper with pre-written annotations. Click, tap or press a key to take control.";
+    let i = 0;
+    const tick = () => {
+      if (!tour) return;
+      steps[i][1]();
+      tour.timer = setTimeout(() => { i = (i + 1) % steps.length; tick(); }, steps[i][0]);
+    };
+    tour.timer = setTimeout(tick, 1800);
+  };
+  if (params.has("autorun")) ready.then(runOnce).then(() => { if (params.has("tour")) startTour(); });
+  for (const ev of ["pointerdown", "keydown", "touchstart", "wheel"]) addEventListener(ev, stopTour, { capture: true, passive: true });
+
   // the surrounding web page can drive the demo (same origin only)
   addEventListener("message", async (e) => {
     await ready;
     const m = e.data;
     if (e.origin !== location.origin || !m || m.source !== "fyrno7-site") return;
+    stopTour();
     if (m.action === "run") return void (await runOnce());
     if (!S.result) await runOnce();
     if (m.action === "style") { const b = $(`#segStyle [data-v="${m.value}"]`); if (b && !b.disabled) b.click(); }
