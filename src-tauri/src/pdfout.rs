@@ -16,20 +16,20 @@ const HELV: [u16; 95] = [
     222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584,
 ];
 
-const GRAY: (f32, f32, f32) = (0.42, 0.45, 0.52);
-const INK: (f32, f32, f32) = (0.10, 0.12, 0.17);
-const ACCENT: (f32, f32, f32) = (0.36, 0.36, 0.94);
+const GRAY: (f32, f32, f32) = (0.37, 0.34, 0.30);
+const INK: (f32, f32, f32) = (0.12, 0.11, 0.09);
+const ACCENT: (f32, f32, f32) = (0.651, 0.239, 0.094);
 
 fn cat_color(c: &str) -> (f32, f32, f32) {
     let hex = match c {
-        "claim" => 0x2563eb,
-        "method" => 0x7c3aed,
-        "result" => 0x16a34a,
-        "limitation" => 0xd97706,
-        "definition" => 0x0d9488,
-        "question" => 0xdb2777,
-        "reference" => 0x6b7280,
-        _ => 0x4f46e5,
+        "claim" => 0x3d5a80,
+        "method" => 0x5f6b3a,
+        "result" => 0x2f6b4f,
+        "limitation" => 0xb06a1a,
+        "definition" => 0x3f6f73,
+        "question" => 0x8a4a62,
+        "reference" => 0x6b6358,
+        _ => 0x54516b,
     };
     (
         ((hex >> 16) & 255) as f32 / 255.0,

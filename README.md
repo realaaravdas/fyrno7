@@ -86,4 +86,4 @@ Previewing `ui/` in a normal browser over `http://` uses a mock model, handy for
 
 ## Website
 
-A static landing page lives in `site/` (open `site/index.html` through any static server, or enable GitHub Pages on the `/site` folder). Logos are in `site/assets/` (`logo.svg`, `logo-light.svg` for dark backgrounds, `icon.svg`).
+A static landing page lives in `site/`. Its live demo is the real app UI (`ui/`) running on a fictional sample paper with pre-written results (`ui/demo/`). The Pages workflow copies `ui/` to `site/demo/` when it deploys. To preview locally, run `cp -r ui site/demo` and serve `site/` with any static server. The legal pages are drafts that need review. Logos are in `site/assets/` (`logo.svg`, `logo-light.svg` for dark backgrounds, `icon.svg`).

@@ -210,3 +210,10 @@ fn image_only_pdf_is_flagged_for_ocr() {
     assert_eq!(pages.len(), 1);
     assert!(pages[0].trim().chars().count() < 40, "scan unexpectedly has text: {:?}", pages[0]);
 }
+
+#[test]
+fn demo_sample_paper_extracts() {
+    let pages = extract_pages(&format!("{}/../ui/demo/sample-paper.pdf", env!("CARGO_MANIFEST_DIR"))).expect("sample paper must parse");
+    assert_eq!(pages.len(), 2);
+    assert!(pages[0].contains("Adaptive Warmup Scheduler (AWS)") && pages[1].contains("FLOPs"));
+}

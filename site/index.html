@@ -3,18 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>fyrno7 · Annotate research papers like a human, with a local LLM</title>
-  <meta name="description" content="fyrno7 is an open-source desktop app that reads research papers and marks them up like a human: Sharpie circles, professional review comments, a companion notes document, an acronym decoder and a TL;DR. Runs entirely on your computer with Gemma, LM Studio or Ollama." />
-  <meta property="og:title" content="fyrno7 · Read papers like a human would" />
-  <meta property="og:description" content="Open-source, local-first paper annotation with Sharpie and professional modes, acronym decoding and TL;DRs." />
-  <meta name="theme-color" content="#0b0d14" />
+  <title>fyrno7: annotate research papers with a local model</title>
+  <meta name="description" content="fyrno7 is a free, open source desktop app that reads research papers with a model running on your computer and annotates them like a human reader. Windows, macOS and Linux." />
+  <meta name="theme-color" content="#f4efe6" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-<!-- reusable logo (inherits text colour) -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <linearGradient id="f7g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="360" y2="165"><stop offset="0" stop-color="#fde047"/><stop offset="0.34" stop-color="#fb923c"/><stop offset="0.68" stop-color="#ef4444"/><stop offset="1" stop-color="#d946ef"/></linearGradient>
     <symbol id="logo" viewBox="-8 -8 392 178">
@@ -28,214 +26,225 @@
   </defs>
 </svg>
 
-<header class="nav" id="nav">
-  <div class="wrap nav-in">
-    <a class="logo" href="#top" aria-label="fyrno7 home"><svg viewBox="-8 -8 392 178"><use href="#logo"/></svg></a>
-    <nav class="links">
-      <a href="#modes">Modes</a><a href="#features">Features</a><a href="#install">Install</a><a href="#open-source">Open source</a><a href="#faq">FAQ</a>
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="./" aria-label="fyrno7 home"><svg viewBox="-8 -8 392 178" role="img" aria-label="fyrno7"><use href="#logo"/></svg></a>
+    <button class="btn small menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#demo">Demo</a>
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/realaaravdas/fyrno7" rel="noopener">GitHub</a>
     </nav>
-    <div class="nav-cta">
-      <a class="btn ghost" href="https://github.com/realaaravdas/fyrno7" target="_blank" rel="noopener"><svg class="ico" viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.200-1.200 3.200-1.200.6 1.600.2 2.800.1 3.100.8.8 1.200 1.800 1.200 3.100 0 4.400-2.700 5.400-5.300 5.700.4.4.8 1.100.8 2.200v3.200c0 .4.2.7.8.6A11.500 11.500 0 0 0 12 .5z"/></svg>GitHub</a>
-      <a class="btn primary" href="#install">Download</a>
-    </div>
   </div>
 </header>
 
-<main id="top">
-  <!-- HERO -->
+<main id="main">
   <section class="hero">
-    <canvas id="net" aria-hidden="true"></canvas>
-    <div class="wrap hero-in">
-      <div class="hero-copy">
-        <span class="eyebrow"><i></i> Open source · 100% local · Windows, macOS, Linux</span>
-        <h1>Read papers the way a <em>human</em> does.</h1>
-        <p class="lead">fyrno7 reads your research PDFs with a local LLM and marks them up like a sharp colleague with a Sharpie: circles, underlines, questions in the margin. Or like a reviewer with a pen. Plus a TL;DR and an acronym decoder. Nothing ever leaves your computer.</p>
-        <div class="cta">
-          <a class="btn primary lg" href="#install"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg>Download for Windows</a>
-          <a class="btn ghost lg" href="https://github.com/realaaravdas/fyrno7" target="_blank" rel="noopener">View source</a>
-        </div>
-        <ul class="trust"><li><b data-count="0">0</b> uploads</li><li><b data-count="4">4</b> export formats</li><li><b>Rust</b> backend</li></ul>
+    <div class="wrap">
+      <h1>Annotate research papers with a model that runs on your computer</h1>
+      <p class="lede">fyrno7 reads a PDF the way a careful reader does. It underlines the claims, circles the jargon and questions weak reasoning in the margin. Then it writes a TL;DR, decodes the acronyms and drafts a notes document. Scanned papers are read with built-in OCR.</p>
+      <div class="actions">
+        <a class="btn primary" id="dlPrimary" href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64-setup.exe"><span id="dlLabel">Download for Windows</span></a>
+        <a class="btn" href="#demo">Try the demo</a>
       </div>
-      <div class="hero-demo"><div class="stage" id="heroStage"></div><div class="glow"></div></div>
+      <p class="fine">Free and open source under the MIT license. Available for Windows, macOS and Linux.</p>
     </div>
   </section>
 
-  <!-- MODES -->
-  <section class="sec" id="modes">
+  <section class="demo" id="demo" aria-labelledby="demo-h">
     <div class="wrap">
-      <header class="sec-h"><span class="kicker">Annotation modes</span><h2>One paper, three ways to read it.</h2><p>Mix and match. Generate everything in a single pass and flip between styles instantly.</p></header>
-      <div class="tabs" role="tablist" id="modeTabs">
-        <button role="tab" class="on" data-m="sharpie"><span class="dot r"></span>Sharpie</button>
-        <button role="tab" data-m="pro"><span class="dot b"></span>Professional</button>
-        <button role="tab" data-m="doc"><span class="dot g"></span>Companion document</button>
+      <div class="demo-head">
+        <h2 id="demo-h">A working demo</h2>
+        <p>This is the real interface running in your browser on a fictional sample paper. The annotations are pre-written and the progress steps are simulated. In the desktop app, your local model produces them.</p>
       </div>
-      <div class="mode-grid">
-        <div class="mode-copy" id="modeCopy"></div>
-        <div class="mode-view"><div class="stage" id="modeStage"></div></div>
+      <div class="demo-frame" id="demoBox">
+        <iframe id="demoFrame" src="demo/?demo=1&amp;autorun=1" title="fyrno7 interface demo with a sample paper" width="1280" height="800"></iframe>
       </div>
+      <div class="demo-controls" role="group" aria-label="Change what the demo shows">
+        <span class="label">Show</span>
+        <button class="btn small" type="button" data-demo="style:sharpie">Sharpie view</button>
+        <button class="btn small" type="button" data-demo="style:pro">Professional view</button>
+        <button class="btn small" type="button" data-demo="tab:tldr">TL;DR</button>
+        <button class="btn small" type="button" data-demo="tab:acr">Acronyms</button>
+        <button class="btn small" type="button" data-demo="tab:doc">Companion notes</button>
+      </div>
+      <p class="demo-note">You can also use the demo directly: click an annotation, filter by category or switch views. <a href="demo/?demo=1&amp;autorun=1" target="_blank" rel="noopener">Open it in its own tab</a> for a larger view.</p>
+      <p class="demo-note demo-small">On a phone the demo is shown at reduced size. It is laid out for a desktop screen.</p>
+      <noscript><p class="demo-note">The demo needs JavaScript. The desktop app does not.</p></noscript>
     </div>
   </section>
 
-  <!-- HOW -->
-  <section class="sec alt" id="how">
-    <div class="wrap">
-      <header class="sec-h"><span class="kicker">How it works</span><h2>From PDF to marked-up paper in three steps.</h2></header>
+  <section class="section" id="features" aria-labelledby="features-h">
+    <div class="wrap split">
+      <header>
+        <h2 id="features-h">What it produces</h2>
+        <p>Choose any combination. One pass over the paper generates everything, and you can switch between views afterwards.</p>
+      </header>
+      <dl class="defs">
+        <div><dt>Sharpie view</dt><dd>Circles, underlines, squiggles and handwritten margin notes drawn over your PDF. Your original file is never changed.</dd></div>
+        <div><dt>Professional view</dt><dd>Color coded highlights with numbered comments. Each comment carries a category and a severity, so a reviewer can scan for the major issues first.</dd></div>
+        <div><dt>Companion notes</dt><dd>A separate document with an overview, key results, strengths, weaknesses and questions for the authors. Export it as Markdown or HTML.</dd></div>
+        <div><dt>TL;DR</dt><dd>A one sentence summary, the key points and a plain language version. A reader level setting controls how much background it assumes.</dd></div>
+        <div><dt>Acronym decoder</dt><dd>Definitions the paper writes out are found with pattern matching and labelled as defined in the paper. Only the remaining abbreviations go to the model, and those are labelled as inferred.</dd></div>
+        <div><dt>Quote checking</dt><dd>Every passage the model quotes must exist in the PDF text. A quote that cannot be found is dropped before anything is drawn on the page.</dd></div>
+        <div><dt>Scanned papers</dt><dd>Pages without selectable text are read by an OCR engine bundled with the app. It runs on your computer and needs no download. Accuracy is best on clean, upright pages in English or other Latin scripts.</dd></div>
+        <div><dt>Summary PDF</dt><dd>Export the TL;DR, the acronyms and every annotation, grouped by page, as a new PDF. You can also print the annotated pages to PDF or save the annotations as JSON.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="how-h">
+    <div class="wrap split">
+      <header><h2 id="how-h">How it works</h2></header>
       <ol class="steps">
-        <li class="reveal"><span class="num">1</span><h3>Open a paper</h3><p>Drop any PDF with selectable text. A Rust backend extracts and cleans the text, finds the references, and splits it into model-sized chunks.</p>
-          <div class="mini pdfmini"><i></i><i></i><i></i><i></i><i class="s"></i></div></li>
-        <li class="reveal"><span class="num">2</span><h3>Your local model reads it</h3><p>Gemma (or any model) running in LM Studio or Ollama annotates each chunk. Every quote is verified against the real text, so invented ones are thrown away.</p>
-          <div class="mini chat"><span></span><span></span><span></span></div></li>
-        <li class="reveal"><span class="num">3</span><h3>Read, filter, export</h3><p>Flip between Sharpie and Professional views, filter by category, delete what you disagree with, then export a summary PDF or companion notes.</p>
-          <div class="mini exp"><b>PDF</b><b>MD</b><b>HTML</b><b>JSON</b></div></li>
+        <li><div><h3>Start a model server</h3><p>Run LM Studio or Ollama with a model such as Gemma 3. fyrno7 talks to any server that speaks the OpenAI API.</p></div></li>
+        <li><div><h3>Open a paper</h3><p>Drop in a PDF. Pages without selectable text are read with OCR first, and the paper is split into chunks that fit your model.</p></div></li>
+        <li><div><h3>Choose what you want</h3><p>Pick Sharpie, Professional, a companion document, a TL;DR and acronym decoding in any combination, then press Annotate.</p></div></li>
+        <li><div><h3>Read and export</h3><p>Switch views, filter by category, delete annotations you disagree with and export the results.</p></div></li>
       </ol>
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section class="sec" id="features">
-    <div class="wrap">
-      <header class="sec-h"><span class="kicker">Features</span><h2>Everything a careful reader does, automated.</h2></header>
-      <div class="bento">
-        <article class="card c-wide reveal"><h3>TL;DR in seconds</h3><p>A one-liner, key points and a plain-English version, tuned to how much background you have.</p>
-          <div class="tldr"><b>TL;DR</b><p id="typed" aria-live="polite"></p><div class="eli"><span>In plain English</span>Smarter step sizes help big models learn faster, but not when you only have a little data.</div></div></article>
-        <article class="card reveal"><h3>Acronym decoder</h3><p>Definitions the paper gives itself are mined in Rust. Only the rest are guessed, and labelled so.</p>
-          <div class="acr-demo"><p>…optimised with <span class="acr">SGD<i>Stochastic Gradient Descent<small>defined in paper · p. 1</small></i></span> and evaluated on…</p>
-          <div class="chips"><span class="tag tg-paper">defined in paper</span><span class="tag tg-inf">inferred</span></div></div></article>
-        <article class="card reveal"><h3>Hallucination filter</h3><p>Each quote must exist in the PDF text. If it does not, it never reaches the page.</p>
-          <ul class="verify"><li class="ok"><span>✓</span>“reduce validation loss by 14.2%”</li><li class="no"><span>✕</span>“improves accuracy on ImageNet”</li><li class="ok"><span>✓</span>“English text only”</li></ul></article>
-        <article class="card reveal"><h3>Private by design</h3><p>Talks only to a model on <code>localhost</code>. No accounts, no telemetry, no uploads.</p>
-          <svg class="lock" viewBox="0 0 120 80"><rect x="30" y="34" width="60" height="40" rx="8"/><path d="M42 34V24a18 18 0 0 1 36 0v10"/><circle cx="60" cy="54" r="5"/><path class="cloud" d="M14 20a10 10 0 0 1 12-9 13 13 0 0 1 24 2 8 8 0 0 1-2 16H20a8 8 0 0 1-6-9z" transform="translate(52 -6) scale(.6)"/><path class="x" d="M96 6 112 22M112 6 96 22"/></svg></article>
-        <article class="card reveal"><h3>Bring any model</h3><p>Anything that speaks the OpenAI API: Gemma 3, Llama, Qwen, Mistral…</p>
-          <div class="chips big"><span>LM Studio</span><span>Ollama</span><span>llama.cpp</span><span>vLLM</span><span>Jan</span><span>KoboldCpp</span></div></article>
-        <article class="card c-wide reveal"><h3>Export it your way</h3><p>A tidy Summary PDF with your TL;DR, acronyms and every annotation by page, plus companion Markdown / HTML, annotations JSON, or the annotated pages via print-to-PDF.</p>
-          <div class="files"><span>summary.pdf</span><span>companion.md</span><span>companion.html</span><span>annotations.json</span></div></article>
-        <article class="card reveal"><h3>Scanned papers? Fine.</h3><p>Pages without text are read by a built-in OCR engine. It runs on your computer, with no download and no upload.</p>
-          <div class="scan"><i></i><b></b><b></b><b></b><b></b><em>OCR · local</em></div></article>
+  <section class="section" aria-labelledby="local-h">
+    <div class="wrap split">
+      <header><h2 id="local-h">Your papers stay on your computer</h2></header>
+      <div>
+        <p>fyrno7 has no accounts and sends no telemetry. The only network connection the app makes is to the model server address you set, which is on your own machine by default. OCR runs inside the app.</p>
+        <p>If you point fyrno7 at a remote server, the text of the paper goes to that server, so choose it with that in mind. The <a href="privacy.html">Privacy Policy</a> lists exactly what is stored and where.</p>
+        <p>The source is public, so you can check all of this yourself. fyrno7 is released under the MIT license.</p>
       </div>
     </div>
   </section>
 
-  <!-- INSTALL -->
-  <section class="sec alt" id="install">
+  <section class="section" id="download" aria-labelledby="download-h">
     <div class="wrap">
-      <header class="sec-h"><span class="kicker">Get started</span><h2>Download, point it at a model, annotate.</h2><p>Free and open source for Windows, macOS and Linux.</p></header>
-      <div class="install">
-        <div class="dl-card">
-          <svg viewBox="-8 -8 392 178" class="dl-logo"><use href="#logo"/></svg>
-          <span class="oss-badge"><svg class="ico" viewBox="0 0 24 24"><path d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>Open source</span>
-          <h3>Download fyrno7</h3>
-          <p>Free and open source. No account, no cloud, works offline.</p>
-          <a class="btn primary lg" id="dlPrimary" href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64-setup.exe"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg><span id="dlLabel">Download for Windows</span></a>
-          <div class="os-list">
-            <div class="os" data-os="windows"><b>Windows</b><span><a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64-setup.exe">Installer</a><a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64.msi">.msi</a><a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64.exe">Portable .exe</a></span></div>
-            <div class="os" data-os="mac"><b>macOS</b><span><a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-macos-universal.dmg">.dmg (Apple Silicon + Intel)</a></span></div>
-            <div class="os" data-os="linux"><b>Linux</b><span><a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-linux-x86_64.AppImage">AppImage</a><a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-linux-amd64.deb">.deb</a><a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-linux-x86_64.rpm">.rpm</a></span></div>
+      <h2 id="download-h">Download</h2>
+      <p class="fine" style="margin-top:10px">Free. The files below come from the latest release on GitHub.</p>
+      <table class="dl-table">
+        <caption class="sr-only" style="position:absolute;left:-9999px">Downloads by operating system</caption>
+        <tbody>
+          <tr data-os="windows">
+            <th scope="row">Windows<span class="rec" hidden>Recommended for this device</span></th>
+            <td>
+              <a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64-setup.exe">Installer (.exe)</a>
+              <a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64.msi">.msi package</a>
+              <a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64.exe">Portable .exe</a>
+              <span class="meta">Windows 10 or later. Not code signed, so SmartScreen may ask you to confirm.</span>
+            </td>
+          </tr>
+          <tr data-os="mac">
+            <th scope="row">macOS<span class="rec" hidden>Recommended for this device</span></th>
+            <td>
+              <a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-macos-universal.dmg">Disk image (.dmg)</a>
+              <span class="meta">One build for Apple Silicon and Intel. Not code signed or notarized yet.</span>
+            </td>
+          </tr>
+          <tr data-os="linux">
+            <th scope="row">Linux<span class="rec" hidden>Recommended for this device</span></th>
+            <td>
+              <a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-linux-x86_64.AppImage">AppImage</a>
+              <a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-linux-amd64.deb">.deb package</a>
+              <a href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-linux-x86_64.rpm">.rpm package</a>
+              <span class="meta">64-bit x86. The macOS and Linux builds come from automated builds and have not been tested on real machines by the maintainer yet.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="fine">Older versions and release notes are on the <a href="https://github.com/realaaravdas/fyrno7/releases" rel="noopener">releases page</a>.</p>
+
+      <div class="sub">
+        <h3>Set up a model</h3>
+        <p>fyrno7 needs a local model server. Any OpenAI compatible server works, for example LM Studio, Ollama, llama.cpp's <code>llama-server</code>, Jan, KoboldCpp or vLLM. Two common setups:</p>
+        <div class="cols">
+          <div>
+            <h3>LM Studio</h3>
+            <ol>
+              <li>Install <a href="https://lmstudio.ai" rel="noopener">LM Studio</a> and download a Gemma 3 model. The 4B size is fast, and 12B or 27B give better judgement.</li>
+              <li>Open the Developer tab, load the model, set the context length to at least 8192 and start the server.</li>
+              <li>In fyrno7 open Settings, choose LM Studio and press Detect models.</li>
+            </ol>
+            <div class="code"><code>http://localhost:1234</code><button class="btn small copy-btn" type="button" data-copy="http://localhost:1234" aria-label="Copy the LM Studio server address">Copy</button></div>
           </div>
-          <a class="muted-link" href="https://github.com/realaaravdas/fyrno7/releases" target="_blank" rel="noopener">All releases</a>
-          <a class="muted-link" href="https://github.com/realaaravdas/fyrno7" target="_blank" rel="noopener">View the open-source code on GitHub</a>
-          <small>Builds are not code-signed yet, so Windows and macOS show a one-time warning; see the <b>First launch</b> tab. The macOS and Linux builds are made by GitHub Actions and are not yet tested by the maintainer.</small>
+          <div>
+            <h3>Ollama</h3>
+            <ol>
+              <li>Install <a href="https://ollama.com" rel="noopener">Ollama</a> and keep it running.</li>
+              <li>Download a model:</li>
+            </ol>
+            <div class="code"><code>ollama pull gemma3</code><button class="btn small copy-btn" type="button" data-copy="ollama pull gemma3" aria-label="Copy the ollama pull command">Copy</button></div>
+            <ol start="3"><li>In fyrno7 open Settings, choose Ollama and press Detect models. The server address is:</li></ol>
+            <div class="code"><code>http://localhost:11434</code><button class="btn small copy-btn" type="button" data-copy="http://localhost:11434" aria-label="Copy the Ollama server address">Copy</button></div>
+          </div>
         </div>
-        <div class="steps-box">
-          <div class="tabs sm" role="tablist" id="instTabs">
-            <button class="on" data-i="lm">LM Studio</button><button data-i="ol">Ollama</button><button data-i="first">First launch</button><button data-i="src">Build from source</button>
-          </div>
-          <div class="inst-pane on" data-i="lm">
-            <ol class="ol">
-              <li>Install <a href="https://lmstudio.ai" target="_blank" rel="noopener">LM Studio</a> and download a <b>Gemma 3</b> model (4B for speed, 12B or 27B for quality).</li>
-              <li>Open the <b>Developer</b> tab, load the model, set <b>Context length ≥ 8192</b> and start the server.</li>
-              <li>Launch fyrno7 → <b>Settings → Quick setup → LM Studio → Detect models</b>.</li>
-              <li>Open a PDF, pick your modes, press <b>Annotate paper</b>.</li>
-            </ol>
-            <div class="code"><span>Server address</span><code>http://localhost:1234</code><button class="copy" data-copy="http://localhost:1234">Copy</button></div>
-          </div>
-          <div class="inst-pane" data-i="ol">
-            <ol class="ol">
-              <li>Install <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a> and keep it running.</li>
-              <li>Pull a model:</li>
-            </ol>
-            <div class="code"><code>ollama pull gemma3</code><button class="copy" data-copy="ollama pull gemma3">Copy</button></div>
-            <ol class="ol" start="3"><li>In fyrno7 choose <b>Quick setup → Ollama</b> and press <b>Detect models</b>.</li></ol>
-            <div class="code"><span>Server address</span><code>http://localhost:11434</code><button class="copy" data-copy="http://localhost:11434">Copy</button></div>
-          </div>
-          <div class="inst-pane" data-i="first">
-            <ol class="ol">
-              <li><b>Windows:</b> if SmartScreen says "Windows protected your PC", click <b>More info</b> then <b>Run anyway</b>.</li>
-              <li><b>macOS:</b> drag fyrno7 to Applications, then right-click it and choose <b>Open</b>. If macOS says the app is "damaged", run this in Terminal:</li>
-            </ol>
-            <div class="code"><code>xattr -dr com.apple.quarantine /Applications/fyrno7.app</code><button class="copy" data-copy="xattr -dr com.apple.quarantine /Applications/fyrno7.app">Copy</button></div>
-            <ol class="ol" start="3">
-              <li><b>Linux AppImage:</b> make it executable, then run it:</li>
-            </ol>
-            <div class="code"><code>chmod +x fyrno7-linux-x86_64.AppImage &amp;&amp; ./fyrno7-linux-x86_64.AppImage</code><button class="copy" data-copy="chmod +x fyrno7-linux-x86_64.AppImage &amp;&amp; ./fyrno7-linux-x86_64.AppImage">Copy</button></div>
-            <p class="note">The .deb and .rpm packages install like any other: <code>sudo apt install ./fyrno7-linux-amd64.deb</code> or <code>sudo dnf install ./fyrno7-linux-x86_64.rpm</code>.</p>
-          </div>
-          <div class="inst-pane" data-i="src">
-            <p class="note">Requires <a href="https://rustup.rs" target="_blank" rel="noopener">Rust</a> (stable). On Windows you also need the MSVC build tools; WebView2 ships with Windows 11.</p>
-            <div class="code multi"><code>git clone https://github.com/realaaravdas/fyrno7.git
+      </div>
+
+      <div class="sub">
+        <h3>First launch</h3>
+        <div class="disclose" data-exclusive>
+          <details><summary>Windows</summary><div><p>If SmartScreen shows "Windows protected your PC", choose More info and then Run anyway. The builds are not code signed yet.</p></div></details>
+          <details><summary>macOS</summary><div><p>Open the disk image and drag fyrno7 to Applications. Then right click the app and choose Open. If macOS says the app is damaged, remove the quarantine flag in Terminal:</p>
+            <div class="code"><code>xattr -dr com.apple.quarantine /Applications/fyrno7.app</code><button class="btn small copy-btn" type="button" data-copy="xattr -dr com.apple.quarantine /Applications/fyrno7.app" aria-label="Copy the macOS quarantine command">Copy</button></div></div></details>
+          <details><summary>Linux</summary><div><p>Make the AppImage executable and run it:</p>
+            <div class="code"><code>chmod +x fyrno7-linux-x86_64.AppImage &amp;&amp; ./fyrno7-linux-x86_64.AppImage</code><button class="btn small copy-btn" type="button" data-copy="chmod +x fyrno7-linux-x86_64.AppImage &amp;&amp; ./fyrno7-linux-x86_64.AppImage" aria-label="Copy the AppImage command">Copy</button></div>
+            <p>For the packages, use your package manager:</p>
+            <div class="code"><code>sudo apt install ./fyrno7-linux-amd64.deb
+sudo dnf install ./fyrno7-linux-x86_64.rpm</code></div></div></details>
+        </div>
+      </div>
+
+      <div class="sub">
+        <h3>Build from source</h3>
+        <p>You need <a href="https://rustup.rs" rel="noopener">Rust</a> (stable). On Windows you also need the MSVC build tools, and WebView2 ships with Windows 11. On Linux install the <a href="https://tauri.app/start/prerequisites/" rel="noopener">Tauri prerequisites</a>.</p>
+        <div class="code"><code>git clone https://github.com/realaaravdas/fyrno7.git
 cd fyrno7/src-tauri
-cargo run --release</code><button class="copy" data-copy="git clone https://github.com/realaaravdas/fyrno7.git&#10;cd fyrno7/src-tauri&#10;cargo run --release">Copy</button></div>
-            <p class="note">Run <code>cargo test</code> to execute the backend test-suite (PDF extraction, quote matching, acronyms, and the whole pipeline against a fake LLM server).</p>
-          </div>
-        </div>
+cargo run --release</code><button class="btn small copy-btn" type="button" data-copy="git clone https://github.com/realaaravdas/fyrno7.git&#10;cd fyrno7/src-tauri&#10;cargo run --release" aria-label="Copy the build commands">Copy</button></div>
+        <p class="fine">Run <code>cargo test</code> to execute the backend tests.</p>
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="sec" id="faq">
-    <div class="wrap narrow">
-      <header class="sec-h"><span class="kicker">FAQ</span><h2>Questions, answered.</h2></header>
-      <div class="faq" id="faqList">
-        <details><summary>Is my paper really kept private?</summary><div><p>Yes. fyrno7 only talks to the model server you configure, which normally runs on <code>localhost</code>. There are no accounts, no analytics and no cloud calls. If you point it at a remote server, that is your choice, and the text will go there.</p></div></details>
-        <details><summary>Do I have to use Gemma?</summary><div><p>No. Gemma 3 works well and is the suggested default, but any chat model behind an OpenAI-compatible endpoint works: LM Studio, Ollama, llama.cpp’s <code>llama-server</code>, Jan, KoboldCpp or vLLM. Bigger models give sharper annotations.</p></div></details>
-        <details><summary>What hardware do I need?</summary><div><p>It depends on the model you choose. Small models (around 4B parameters, quantised) run on most modern laptops. 12B and 27B models give noticeably better judgement but want a good GPU or plenty of RAM. fyrno7 itself is light.</p></div></details>
-        <details><summary>How long does a paper take?</summary><div><p>That is down to your model and hardware. The paper is processed in chunks with a live progress bar, and you can cancel at any time. A failed chunk only costs you that chunk.</p></div></details>
-        <details><summary>Can the AI make things up?</summary><div><p>Every annotation’s quote is checked against the PDF’s own text in Rust, and anything that cannot be found is discarded. The <em>judgement</em> (“this looks weak”) is still the model’s opinion, so treat it like a well-read colleague’s margin notes, not ground truth. You can delete any annotation you disagree with.</p></div></details>
-        <details><summary>Does it change my PDF?</summary><div><p>No. Annotations are drawn on top of the page in the app. Your original file is never modified. You can export a separate Summary PDF, or print the annotated pages to a new PDF.</p></div></details>
-        <details><summary>How does the acronym decoder work?</summary><div><p>Definitions written in the paper, like “Stochastic Gradient Descent (SGD)”, are found with pattern matching and are marked <em>defined in paper</em>. Only abbreviations that are never defined are sent to the model, and they are labelled <em>inferred</em>. When the model is not sure, it says so instead of guessing.</p></div></details>
-        <details><summary>Does it work on scanned PDFs?</summary><div><p>Yes. If a page has no selectable text, fyrno7 runs OCR on it automatically before annotating. The OCR engine and its models are built into the app and run entirely on your computer, with nothing downloaded or uploaded. Accuracy is best on clean, upright, English or Latin-script pages; badly skewed or low-resolution scans will give rougher text.</p></div></details>
-        <details><summary>Which platforms are supported? Why the warning on first launch?</summary><div><p>Windows, macOS (Apple Silicon and Intel) and Linux builds are published with each release. The macOS and Linux builds are produced by GitHub Actions and have not been tested by the maintainer yet, so please report problems. The apps are not code-signed, so Windows SmartScreen and macOS Gatekeeper show a one-time warning; the <b>First launch</b> tab explains how to open them.</p></div></details>
-        <details><summary>Is it open source?</summary><div><p>Yes, the full source is public on <a href="https://github.com/realaaravdas/fyrno7" target="_blank" rel="noopener">GitHub</a>. Issues and pull requests are welcome.</p></div></details>
+  <section class="section" id="faq" aria-labelledby="faq-h">
+    <div class="wrap split">
+      <header><h2 id="faq-h">Questions</h2></header>
+      <div class="disclose" data-exclusive>
+        <details><summary>Is my paper kept private?</summary><div><p>fyrno7 only talks to the model server you configure, which normally runs on your own computer. There are no accounts, no analytics and no cloud calls. If you point it at a remote server, the text goes there.</p></div></details>
+        <details><summary>Do I have to use Gemma?</summary><div><p>No. Gemma 3 is a good default, and any chat model behind an OpenAI compatible endpoint works. Larger models usually give sharper annotations.</p></div></details>
+        <details><summary>What hardware do I need?</summary><div><p>That depends on the model you choose. Small quantised models of about 4B parameters run on most recent laptops. 12B and 27B models want a capable GPU or plenty of memory. fyrno7 itself is light.</p></div></details>
+        <details><summary>How long does a paper take?</summary><div><p>It depends on your model and hardware. The paper is processed in chunks, and a progress bar shows a percentage and a time estimate. You can cancel at any time, and a chunk that fails only costs you that chunk.</p></div></details>
+        <details><summary>Can the model make things up?</summary><div><p>Every quote is checked against the PDF text, and anything that cannot be found is discarded. The judgement itself, such as "this looks weak", is still the model's opinion. Treat it as a well read colleague's margin notes and delete any annotation you disagree with.</p></div></details>
+        <details><summary>Does it change my PDF?</summary><div><p>No. Annotations are drawn on top of the page inside the app. To keep them, export a Summary PDF or print the annotated pages to a new PDF.</p></div></details>
+        <details><summary>How does the acronym decoder work?</summary><div><p>Definitions written in the paper, such as "Stochastic Gradient Descent (SGD)", are found with pattern matching. Only abbreviations the paper never defines are sent to the model, and they are labelled as inferred. When the model is unsure it leaves the expansion empty.</p></div></details>
+        <details><summary>Does it work on scanned PDFs?</summary><div><p>Yes. If a page has no selectable text, fyrno7 runs OCR on it before annotating. The OCR engine and its models are inside the app, so nothing is downloaded or uploaded. Skewed or low resolution scans give rougher text.</p></div></details>
+        <details><summary>Which systems are supported?</summary><div><p>Windows, macOS (Apple Silicon and Intel) and Linux builds are published with each release. The macOS and Linux builds come from automated builds and have not been tested on real machines by the maintainer yet, so please report problems.</p></div></details>
+        <details><summary>Is it open source?</summary><div><p>Yes. The source is on <a href="https://github.com/realaaravdas/fyrno7" rel="noopener">GitHub</a> under the MIT license. Issues and pull requests are welcome.</p></div></details>
       </div>
-    </div>
-  </section>
-
-  <!-- OPEN SOURCE -->
-  <section class="sec alt oss" id="open-source">
-    <div class="wrap oss-in">
-      <div class="oss-copy">
-        <span class="kicker">Open source</span>
-        <h2>Built in the open. Yours to read, run and improve.</h2>
-        <p>fyrno7 is open source. Every line of the Rust backend and the interface is public on GitHub, so you can see exactly what happens to your papers (nothing leaves your machine), build it yourself, report bugs, or send a pull request.</p>
-        <div class="cta">
-          <a class="btn primary lg" href="https://github.com/realaaravdas/fyrno7" target="_blank" rel="noopener">View on GitHub</a>
-          <a class="btn ghost lg" href="https://github.com/realaaravdas/fyrno7/issues" target="_blank" rel="noopener">Report an issue</a>
-        </div>
-      </div>
-      <ul class="oss-points">
-        <li><b>Auditable</b><span>Read the code that touches your PDFs. No hidden network calls.</span></li>
-        <li><b>Buildable</b><span>One <code>cargo run --release</code> from a fresh clone.</span></li>
-        <li><b>Tested</b><span>Backend test-suite covers extraction, quote checking and the full pipeline.</span></li>
-        <li><b>Contributions welcome</b><span>Issues and pull requests are open to everyone.</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="final">
-    <div class="wrap">
-      <h2>Stop skimming. Start <em>reading</em>.</h2>
-      <p>Free, open source and entirely on your machine.</p>
-      <a class="btn primary lg" href="https://github.com/realaaravdas/fyrno7/releases/latest/download/fyrno7-windows-x64.exe">Download fyrno7</a>
     </div>
   </section>
 </main>
 
-<footer class="foot">
-  <div class="wrap foot-in">
-    <svg viewBox="-8 -8 392 178" class="flogo"><use href="#logo"/></svg>
-    <span>Open-source · Annotate research papers like a human, locally.</span>
-    <nav><a href="https://github.com/realaaravdas/fyrno7" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/realaaravdas/fyrno7/releases" target="_blank" rel="noopener">Releases</a><a href="https://github.com/realaaravdas/fyrno7/issues" target="_blank" rel="noopener">Issues</a></nav>
+<footer class="site-footer">
+  <div class="wrap footer-in">
+    <div>
+      <svg class="brand" viewBox="-8 -8 392 178" role="img" aria-label="fyrno7" style="display:block;height:26px;width:auto;margin-bottom:10px"><use href="#logo"/></svg>
+      <p>Annotate research papers with a model that runs on your computer. MIT licensed.</p>
+    </div>
+    <div>
+      <h2>Project</h2>
+      <ul>
+        <li><a href="https://github.com/realaaravdas/fyrno7" rel="noopener">Source on GitHub</a></li>
+        <li><a href="https://github.com/realaaravdas/fyrno7/releases" rel="noopener">Releases</a></li>
+        <li><a href="https://github.com/realaaravdas/fyrno7/issues" rel="noopener">Report an issue</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Legal</h2>
+      <ul>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
   </div>
 </footer>
 

@@ -20,8 +20,8 @@ const S = {
   models: [], connected: false, running: false, observer: null, ranFor: null,
 };
 
-function loadJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }
-function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+function loadJSON(k, d) { if (backend.demo) return d; try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }
+function saveJSON(k, v) { if (backend.demo) return; try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
 
 function toast(msg, err = false, ms = 4500) {
   const t = document.createElement("div");
@@ -444,9 +444,9 @@ async function exportAs(kind) {
   try { await backend.saveText(path, defs[2]); toast(`Saved ${path.split(/[\\/]/).pop()}`); } catch (e) { toast(String(e), true); }
 }
 function htmlDoc(R) {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(R.title)} – companion notes</title><style>
-body{font:16px/1.6 Georgia,serif;max-width:760px;margin:40px auto;padding:0 20px;color:#1b1e28}h1{font-family:system-ui;letter-spacing:-.02em}h2{font-family:system-ui;font-size:19px;margin-top:2em;border-bottom:1px solid #e4e7f0;padding-bottom:4px}h3{font-family:system-ui}
-blockquote{background:#ececff;border-left:4px solid #5b5bf0;margin:1em 0;padding:.6em 1em;border-radius:0 8px 8px 0}code{background:#f1f2f8;padding:0 4px;border-radius:4px}</style></head><body>${md(R.companionMd || "")}</body></html>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(R.title)}: companion notes</title><style>
+body{font:16px/1.6 Charter,Georgia,serif;max-width:760px;margin:40px auto;padding:0 20px;color:#1f1c18;background:#f4efe6}h1,h2,h3{letter-spacing:-.01em}h2{font-size:19px;margin-top:2em;border-bottom:1px solid #d9d0bf;padding-bottom:4px}
+blockquote{background:#ebe5d8;border-left:4px solid #a63d18;margin:1em 0;padding:.6em 1em}code{background:#ebe5d8;padding:0 4px}</style></head><body>${md(R.companionMd || "")}</body></html>`;
 }
 async function printAnnotated() {
   if (!S.doc) return;
@@ -518,7 +518,29 @@ function bind() {
 async function init() {
   bind();
   renderTab(); fillModelSelect(); updateAnalyzeButton();
-  $("#emptyHint").textContent = backend.isDesktop ? "" : "Browser preview: using a mock model.";
+  $("#emptyHint").textContent = backend.isDesktop ? "" : backend.demo ? "" : "Browser preview: using a mock model.";
   refreshConnection();
+  if (backend.demo) setupDemo();
+}
+
+/* ------------------------------------------------------------------ website demo */
+let runPromise = null;
+const runOnce = () => (runPromise ||= analyze().finally(() => (runPromise = null)));
+function setupDemo() {
+  document.documentElement.dataset.theme = "light";
+  $("#demoBar").hidden = false;
+  for (const id of ["modeSharpie", "modePro", "modeCompanion", "optTldr", "optAcr"]) $("#" + id).checked = true;
+  const ready = openPaper(backend.samplePath);
+  if (new URLSearchParams(location.search).has("autorun")) ready.then(runOnce);
+  // the surrounding web page can drive the demo (same origin only)
+  addEventListener("message", async (e) => {
+    await ready;
+    const m = e.data;
+    if (e.origin !== location.origin || !m || m.source !== "fyrno7-site") return;
+    if (m.action === "run") return void (await runOnce());
+    if (!S.result) await runOnce();
+    if (m.action === "style") { const b = $(`#segStyle [data-v="${m.value}"]`); if (b && !b.disabled) b.click(); }
+    if (m.action === "tab") { S.tab = m.value; renderTab(); }
+  });
 }
 init();

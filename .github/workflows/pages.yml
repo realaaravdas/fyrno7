@@ -3,7 +3,7 @@ name: Deploy site to GitHub Pages
 on:
   push:
     branches: [master, main]
-    paths: ["site/**", ".github/workflows/pages.yml"]
+    paths: ["site/**", "ui/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -23,6 +23,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Add the live demo (the app UI) to the site
+        run: cp -r ui site/demo
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy (draft) | fyrno7</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#f4efe6" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="./" aria-label="fyrno7 home"><img src="assets/logo.svg" alt="fyrno7" style="height:100%;width:auto;display:block" /></a>
+    <nav class="nav static" aria-label="Main">
+      <a href="./#demo">Demo</a><a href="./#features">Features</a><a href="./#download">Download</a><a href="./#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="legal">
+  <div class="wrap">
+    <h1>Privacy Policy</h1>
+    <p class="fine">Applies to the fyrno7 desktop app and this website.</p>
+    <div class="draft"><strong>Draft for review.</strong> This policy describes what the software and website actually do today. Items marked <span class="todo">to be confirmed</span> are missing details the project owner must supply, and the whole text should be reviewed by a qualified person before it is relied on.</div>
+
+    <h2>1. The short version</h2>
+    <p>The fyrno7 app has no accounts and sends no telemetry, analytics or crash reports to anyone. Your papers are read and processed on your computer. The one network connection the app makes is to the model server address you configure, which is <code>http://localhost:1234</code> by default.</p>
+
+    <h2>2. The desktop app</h2>
+    <h3>What it processes</h3>
+    <ul>
+      <li>The PDF files you open. They are read from the location you choose, and the text is extracted on your computer.</li>
+      <li>For scanned pages, an image of the page is created in memory and read by the OCR engine bundled in the app. It does not leave your computer.</li>
+      <li>Passages of the paper, sent as prompts to the model server you configured, so that the model can annotate, summarize and decode acronyms.</li>
+    </ul>
+    <h3>Where the paper text goes</h3>
+    <p>To the model server you set in Settings. With the defaults that is a program on your own machine, such as LM Studio or Ollama. If you enter the address of a remote server, the paper text is sent to that server and is governed by its operator's terms and privacy practices. fyrno7 does not check where the address points.</p>
+    <h3>What is stored on your computer</h3>
+    <ul>
+      <li>Your settings and preferences: the server address, the model name, an API key if you choose to enter one, generation settings and interface choices. These are kept in the app's local storage on your device, and an API key is stored without encryption.</li>
+      <li>The extracted text of the open paper is held in memory while the app is running and is not written to disk by the app.</li>
+      <li>Exports, such as the Summary PDF, companion notes and annotation files, are written only to the location you choose.</li>
+    </ul>
+    <h3>What is not collected</h3>
+    <p>The app does not collect your name, email address, device identifiers, usage statistics or the content of your papers. It does not check for updates in the background.</p>
+
+    <h2>3. This website</h2>
+    <ul>
+      <li>The site is a set of static pages hosted on GitHub Pages. It sets no cookies and runs no analytics, advertising or third party scripts. Fonts and scripts are served from the site itself.</li>
+      <li>The interactive demo runs in your browser. It loads a fictional sample paper and pre-written results from this site. Nothing you do in the demo is uploaded, and the demo does not use browser storage.</li>
+      <li>Download links lead to GitHub Releases. GitHub, as the host, processes connection data such as your IP address and browser details when you load pages or download files, under the <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub General Privacy Statement</a>. The project does not receive that data.</li>
+    </ul>
+
+    <h2>4. Third parties</h2>
+    <p>Model servers and models you run with fyrno7, such as LM Studio, Ollama and the model files themselves, have their own terms and privacy practices. Links from this site to GitHub and other sites are governed by those sites' policies.</p>
+
+    <h2>5. Retention and your choices</h2>
+    <p>The project holds no personal data about app users, so it has nothing to retain or delete on your behalf. You can remove the app's stored settings by deleting the app's data on your device, and you can delete any export file like any other file.</p>
+    <p><span class="todo">To be confirmed:</span> rights and legal bases that apply in specific regions (for example under the GDPR or the CCPA), and whether any of them require additional wording.</p>
+
+    <h2>6. Children</h2>
+    <p><span class="todo">To be confirmed:</span> the project has not set an age guideline. The app does not knowingly collect any personal information.</p>
+
+    <h2>7. Changes</h2>
+    <p>Changes to this policy will be published on this page. <span class="todo">Effective date to be confirmed.</span></p>
+
+    <h2>8. Contact</h2>
+    <p>Open an issue at <a href="https://github.com/realaaravdas/fyrno7/issues" rel="noopener">github.com/realaaravdas/fyrno7/issues</a>. <span class="todo">Operator name and a privacy contact address to be confirmed.</span></p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-in">
+    <div><p>fyrno7. MIT licensed.</p></div>
+    <div><h2>Project</h2><ul><li><a href="https://github.com/realaaravdas/fyrno7" rel="noopener">Source on GitHub</a></li><li><a href="https://github.com/realaaravdas/fyrno7/issues" rel="noopener">Report an issue</a></li></ul></div>
+    <div><h2>Legal</h2><ul><li><a href="terms.html">Terms of Service</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul></div>
+  </div>
+</footer>
+</body>
+</html>

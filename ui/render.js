@@ -2,8 +2,8 @@
 const NS = "http://www.w3.org/2000/svg";
 
 export const CAT_COLORS = {
-  claim: "#2563eb", method: "#7c3aed", result: "#16a34a", limitation: "#d97706",
-  definition: "#0d9488", question: "#db2777", reference: "#6b7280", insight: "#4f46e5",
+  claim: "#3d5a80", method: "#5f6b3a", result: "#2f6b4f", limitation: "#b06a1a",
+  definition: "#3f6f73", question: "#8a4a62", reference: "#6b6358", insight: "#54516b",
 };
 export const CAT_LABEL = {
   claim: "Claim", method: "Method", result: "Result", limitation: "Limitation",
@@ -250,7 +250,7 @@ export function drawAcronyms(ctx, hits) {
       el("path", { d: `M${f(x)},${f(y)} L${f(x + q.w)},${f(y)}`, stroke: "#0ea5e9", "stroke-width": 2, "stroke-dasharray": "1 3", "stroke-linecap": "round" }, svg);
       const hit = el("rect", { x: f(x), y: f(q.y), width: f(q.w), height: f(q.h + 3), class: "hit" }, svg);
       const t = el("title", {}, hit);
-      t.textContent = `${acr.short} — ${acr.long}${acr.source === "inferred" ? " (inferred)" : ""}`;
+      t.textContent = `${acr.short}: ${acr.long}${acr.source === "inferred" ? " (inferred)" : ""}`;
     }
   }
 }

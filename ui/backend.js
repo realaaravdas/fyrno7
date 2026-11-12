@@ -1,6 +1,7 @@
 // Bridge to the Rust backend (Tauri). A tiny in-browser mock is used when the page is
 // opened outside Tauri, which makes the UI easy to preview and test.
 import * as pdfjs from "./vendor/pdf.min.mjs";
+import { demoBackend } from "./demo.js";
 
 const T = window.__TAURI__;
 
@@ -79,7 +80,7 @@ function mockBackend() {
         const w = t.split(" ");
         for (let k = 0; k < 6 && w.length > 60; k++) {
           const s = Math.floor(((k + 0.5) / 6) * (w.length - 12));
-          anns.push({ id: id++, page: p + 1, quote: w.slice(s, s + 3 + (k % 3) * 2).join(" "), kind: kinds[(id + k) % 10], note: notes[(id + k) % 10], detail: `Reviewer comment: ${notes[(id + k) % 10]} — worth checking against the evidence presented.`, category: cats[(id + k) % 10], severity: ["info", "minor", "major"][k % 3] });
+          anns.push({ id: id++, page: p + 1, quote: w.slice(s, s + 3 + (k % 3) * 2).join(" "), kind: kinds[(id + k) % 10], note: notes[(id + k) % 10], detail: `Reviewer comment: ${notes[(id + k) % 10]}, worth checking against the evidence presented.`, category: cats[(id + k) % 10], severity: ["info", "minor", "major"][k % 3] });
         }
         onProgress({ done: p + 1, total: pages.length, message: `Mock reading page ${p + 1}` });
       });
@@ -110,5 +111,6 @@ function mockBackend() {
   };
 }
 
-export const backend = T ? tauriBackend() : mockBackend();
-if (!T) window.__mock = backend;
+const DEMO = !T && new URLSearchParams(location.search).has("demo");
+export const backend = T ? tauriBackend() : DEMO ? demoBackend() : mockBackend();
+if (!T && !DEMO) window.__mock = backend;

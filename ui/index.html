@@ -19,6 +19,7 @@
     </symbol>
 </defs></svg>
 <div id="app">
+  <div class="demo-bar" id="demoBar" hidden><b>Demo</b> A fictional sample paper with pre-written annotations. The desktop app writes these with your local model, and the progress steps here are simulated.</div>
   <header class="topbar">
     <div class="brand">
       <svg class="wordmark" viewBox="-8 -8 392 178" aria-label="fyrno7"><use href="#logo"/></svg>
@@ -34,34 +35,25 @@
   <div class="body">
     <!-- Left: controls -->
     <aside class="sidebar" id="sidebar">
-      <section class="card" id="paperCard">
-        <div class="drop" id="dropzone">
-          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6m-3 3 3-3 3 3"/></svg>
-          <div><b>Open a paper</b><small>Drop a PDF here or click to browse</small></div>
-        </div>
+      <section class="group" id="paperCard">
+        <button class="drop" id="dropzone" type="button"><b>Open a paper</b><small>Drop a PDF here or click to browse</small></button>
         <div class="paper-meta" id="paperMeta" hidden></div>
       </section>
 
-      <section class="card">
-        <h3>Annotation modes <small>combine freely</small></h3>
-        <label class="mode"><input type="checkbox" id="modeSharpie" checked />
-          <span class="mode-body"><span class="mode-ico sharpie"><svg viewBox="0 0 24 24"><path d="M4 20c3-1 4-4 6-6l7-7 3 3-7 7c-2 2-5 3-9 3z"/><path d="m15 5 4 4"/></svg></span>
-          <span><b>Sharpie</b><small>Hand-drawn circles, underlines &amp; scribbled margin notes</small></span></span></label>
-        <label class="mode"><input type="checkbox" id="modePro" />
-          <span class="mode-body"><span class="mode-ico pro"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
-          <span><b>Professional</b><small>Clean highlights with numbered review comments</small></span></span></label>
-        <label class="mode"><input type="checkbox" id="modeCompanion" />
-          <span class="mode-body"><span class="mode-ico doc"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
-          <span><b>Companion document</b><small>A separate notes file: overview, critique, questions</small></span></span></label>
-      </section>
+      <fieldset class="group">
+        <legend>Annotation modes <small>combine freely</small></legend>
+        <label class="opt"><input type="checkbox" id="modeSharpie" checked /><span><b>Sharpie</b><small>Hand-drawn circles, underlines and margin notes</small></span></label>
+        <label class="opt"><input type="checkbox" id="modePro" /><span><b>Professional</b><small>Clean highlights with numbered review comments</small></span></label>
+        <label class="opt"><input type="checkbox" id="modeCompanion" /><span><b>Companion document</b><small>A separate notes file with overview, critique and questions</small></span></label>
+      </fieldset>
 
-      <section class="card">
-        <h3>Extras</h3>
-        <label class="switch"><input type="checkbox" id="optTldr" checked /><span class="track"></span><span class="sw-label"><b>TL;DR</b><small>One-liner, bullets &amp; plain-English version</small></span></label>
-        <label class="switch"><input type="checkbox" id="optAcr" checked /><span class="track"></span><span class="sw-label"><b>Acronym decoder</b><small>Definitions found in the paper, plus smart guesses</small></span></label>
-      </section>
+      <fieldset class="group">
+        <legend>Extras</legend>
+        <label class="opt"><input type="checkbox" id="optTldr" checked /><span><b>TL;DR</b><small>One sentence, key points and a plain language version</small></span></label>
+        <label class="opt"><input type="checkbox" id="optAcr" checked /><span><b>Acronym decoder</b><small>Definitions from the paper, plus labelled guesses</small></span></label>
+      </fieldset>
 
-      <section class="card">
+      <section class="group">
         <h3>Reading style</h3>
         <div class="field"><span>Detail</span>
           <div class="seg" id="segDensity"><button data-v="light">Light</button><button data-v="balanced" class="on">Balanced</button><button data-v="thorough">Thorough</button></div></div>
@@ -86,7 +78,7 @@
           <button data-v="pro">Professional</button>
         </div>
         <label class="chip-toggle"><input type="checkbox" id="chkAnn" checked /><span>Annotations</span></label>
-        <label class="chip-toggle"><input type="checkbox" id="chkAcr" /><span>Decode acronyms</span></label>
+        <label class="chip-toggle"><input type="checkbox" id="chkAcr" /><span>Acronyms</span></label>
         <span class="spacer"></span>
         <div class="zoom">
           <button class="icon-btn" id="zoomOut" title="Zoom out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
@@ -107,11 +99,8 @@
       </div>
       <div class="viewer" id="viewer">
         <div class="empty" id="emptyState">
-          <div class="empty-art">
-            <svg viewBox="0 0 220 150" width="220"><rect x="40" y="10" width="120" height="132" rx="6" class="e-paper"/><rect x="56" y="30" width="70" height="6" rx="3" class="e-line"/><rect x="56" y="46" width="88" height="6" rx="3" class="e-line"/><rect x="56" y="62" width="60" height="6" rx="3" class="e-line"/><rect x="52" y="44" width="96" height="10" rx="5" fill="#fde047" opacity=".6"/><ellipse cx="86" cy="66" rx="36" ry="11" fill="none" stroke="#ef4444" stroke-width="3"/><path d="M56 100q10-6 20 0t20 0 20 0 20 0" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><rect x="56" y="114" width="80" height="6" rx="3" class="e-line"/><text x="150" y="68" font-family="Caveat, cursive" font-size="22" fill="#ef4444" transform="rotate(-6 150 68)">key result!</text></svg>
-          </div>
-          <h2>Read it like a human would</h2>
-          <p>Open a research paper and let your local model underline, circle, question and summarise it. Nothing leaves your computer.</p>
+          <h2>Open a research paper</h2>
+          <p>fyrno7 underlines, circles and questions the paper with your local model, then writes a TL;DR and decodes the acronyms. Nothing leaves your computer.</p>
           <button class="primary" id="btnOpenBig">Open a PDF</button>
           <small id="emptyHint"></small>
         </div>

@@ -1,0 +1,188 @@
+{
+  "title": "Warmup Length and Gradient Noise in Small-Batch Language Model Training",
+  "nPages": 2,
+  "model": "Pre-written demo results",
+  "warnings": [],
+  "annotations": [
+    {
+      "id": 1,
+      "page": 1,
+      "quote": "Stochastic Gradient Descent (SGD)",
+      "kind": "circle",
+      "category": "definition",
+      "severity": "info",
+      "note": "SGD, defined here",
+      "detail": "SGD is spelled out once and then abbreviated. It is the optimizer the whole paper builds on."
+    },
+    {
+      "id": 2,
+      "page": 1,
+      "quote": "they produce noisy gradients that make early training unstable",
+      "kind": "underline",
+      "category": "claim",
+      "severity": "minor",
+      "note": "this is the problem",
+      "detail": "The motivating claim: small batches give noisy gradients, which hurts early training. The abstract states it without evidence."
+    },
+    {
+      "id": 3,
+      "page": 1,
+      "quote": "lowers validation loss by 6.8 percent",
+      "kind": "star",
+      "category": "result",
+      "severity": "major",
+      "note": "headline result",
+      "detail": "The main quantitative claim. Judge it against the baseline, a fixed warmup of 2,000 steps, before calling 6.8 percent large."
+    },
+    {
+      "id": 4,
+      "page": 1,
+      "quote": "fewer than ten thousand documents",
+      "kind": "doubt",
+      "category": "limitation",
+      "severity": "major",
+      "note": "so what about small data?",
+      "detail": "The gain vanishes on small datasets. Small batches often go with small data, so this narrows who benefits."
+    },
+    {
+      "id": 5,
+      "page": 1,
+      "quote": "we evaluate only on English text",
+      "kind": "underline",
+      "category": "limitation",
+      "severity": "minor",
+      "note": "English only",
+      "detail": "No multilingual evaluation, so claims about language models in general are not supported."
+    },
+    {
+      "id": 6,
+      "page": 1,
+      "quote": "gradient variance in the first epoch predicts how much warmup a model needs",
+      "kind": "question",
+      "category": "question",
+      "severity": "major",
+      "note": "predicts? how well?",
+      "detail": "A predictive claim with no correlation or error bar in this part of the paper. Look for the evidence in Section 3."
+    },
+    {
+      "id": 7,
+      "page": 1,
+      "quote": "it assumes that gradient variance is a reliable proxy for training stability",
+      "kind": "doubt",
+      "category": "limitation",
+      "severity": "major",
+      "note": "big assumption",
+      "detail": "The whole method rests on this. The authors test it only on models up to 350 million parameters."
+    },
+    {
+      "id": 8,
+      "page": 1,
+      "quote": "All results are the mean of three random seeds",
+      "kind": "question",
+      "category": "limitation",
+      "severity": "minor",
+      "note": "only 3 seeds",
+      "detail": "Three seeds give wide uncertainty, and the spread across seeds is not reported in this excerpt."
+    },
+    {
+      "id": 9,
+      "page": 2,
+      "quote": "adds negligible FLOPs",
+      "kind": "circle",
+      "category": "definition",
+      "severity": "info",
+      "note": "FLOPs?",
+      "detail": "FLOPs is never defined in the paper. It stands for floating-point operations."
+    },
+    {
+      "id": 10,
+      "page": 2,
+      "quote": "the three schedules are statistically indistinguishable",
+      "kind": "star",
+      "category": "result",
+      "severity": "major",
+      "note": "key caveat",
+      "detail": "With 8,000 documents the benefit disappears entirely, matching the warning in the abstract."
+    },
+    {
+      "id": 11,
+      "page": 2,
+      "quote": "overlap with the baseline in one of three comparisons",
+      "kind": "doubt",
+      "category": "limitation",
+      "severity": "major",
+      "note": "weaker than the abstract says",
+      "detail": "At 350 million parameters one comparison overlaps the baseline, so the gain is not uniform across sizes."
+    },
+    {
+      "id": 12,
+      "page": 2,
+      "quote": "We also tuned the threshold on the 125 million parameter model",
+      "kind": "underline",
+      "category": "limitation",
+      "severity": "major",
+      "note": "tuned where it works best",
+      "detail": "Tuning on one size and reusing the value elsewhere can inflate the result at the size it was tuned on."
+    }
+  ],
+  "tldr": {
+    "oneLiner": "Letting gradient variance decide the warmup length lowers validation loss by up to 6.8 percent in small-batch training, but only when there is enough data.",
+    "bullets": [
+      "Problem: small batches give noisy gradients, so early training is unstable and the warmup length is usually guessed.",
+      "Method: the Adaptive Warmup Scheduler keeps the learning rate at its warmup value until measured gradient variance settles.",
+      "Results: 6.8 percent lower validation loss at 125 million parameters and 4.1 percent at 350 million. The no-warmup baseline diverged in two of nine runs.",
+      "Limits: no gain with 8,000 documents, English text only, three seeds, and the threshold was tuned on one model size."
+    ],
+    "eli5": "Learning to ride a bike goes better if you start slowly. This paper gives a model a way to notice that it is still wobbly and keep going slowly until it steadies, instead of always using the same slow start.",
+    "keywords": [
+      "learning rate warmup",
+      "gradient variance",
+      "small-batch training",
+      "language models",
+      "schedulers"
+    ]
+  },
+  "acronyms": [
+    {
+      "short": "AWS",
+      "long": "Adaptive Warmup Scheduler",
+      "source": "paper",
+      "count": 8,
+      "firstPage": 1,
+      "context": "We propose the Adaptive Warmup Scheduler (AWS), which lengthens the warmup phase"
+    },
+    {
+      "short": "SGD",
+      "long": "Stochastic Gradient Descent",
+      "source": "paper",
+      "count": 1,
+      "firstPage": 1,
+      "context": "We study how Stochastic Gradient Descent (SGD) behaves when large language models"
+    },
+    {
+      "short": "LLM",
+      "long": "large language models",
+      "source": "paper",
+      "count": 1,
+      "firstPage": 1,
+      "context": "when large language models (LLMs) are trained with small batches"
+    },
+    {
+      "short": "GPU",
+      "long": "Graphics Processing Unit",
+      "source": "inferred",
+      "count": 2,
+      "firstPage": 1,
+      "context": "they fit on a single GPU, but they produce noisy gradients"
+    },
+    {
+      "short": "FLOPs",
+      "long": "Floating-point operations",
+      "source": "inferred",
+      "count": 1,
+      "firstPage": 2,
+      "context": "backward pass and adds negligible FLOPs"
+    }
+  ],
+  "companionMd": "# Companion notes: Warmup Length and Gradient Noise in Small-Batch Language Model Training\n\n> **TL;DR** Letting gradient variance decide the warmup length lowers validation loss by up to 6.8 percent in small-batch training, but only when there is enough data.\n\n## Overview\n\nThe paper looks at training language models with small batches, where noisy gradients make the first phase of training unstable. It proposes a scheduler that decides how long to keep the learning rate low by watching gradient variance, rather than fixing the warmup length in advance.\n\n**Research question.** Can gradient variance be used to choose the warmup length automatically?\n\n## Claimed contributions\n\n- Gradient variance in the first epoch predicts how much warmup a model needs.\n- The Adaptive Warmup Scheduler, with one extra hyperparameter.\n- A configuration detailed enough to repeat the experiments.\n\n## Method in plain terms\n\nThe scheduler tracks the variance of the gradient norm over a window of 200 steps. It holds the learning rate at its warmup value until the variance has stayed under a threshold for 100 steps, then starts a cosine decay.\n\n## Key results\n\n- 6.8 percent lower validation loss than a fixed warmup at 125 million parameters, and 4.1 percent lower at 350 million.\n- The no-warmup baseline diverged in two of nine runs.\n- Training time per step grows by less than 1 percent.\n\n## Page-by-page digest\n\n- **p. 1**: Abstract, introduction, method and the start of the experiments. States the problem, the scheduler and its single threshold.\n- **p. 2**: Remaining results, the small-data experiment, limitations and conclusion.\n\n## Critical read\n\n### Strengths\n\n- A simple rule with one new hyperparameter.\n- Includes a no-warmup baseline that fails in some runs, which shows warmup matters.\n\n### Weaknesses and risks\n\n- The method assumes gradient variance is a reliable proxy for stability, tested only up to 350 million parameters.\n- The threshold was tuned on the 125 million parameter model and reused.\n- Only three seeds, and one confidence interval overlaps the baseline.\n- English text only, no downstream task measurements.\n\n## Questions for the authors\n\n- How strongly does first-epoch variance correlate with the warmup length that works best?\n- Does the benefit survive when the threshold is tuned separately for each model size?\n- What happens on multilingual data?\n\n## Terms to know\n\n- **Warmup**: a short period at the start of training with a small learning rate.\n- **Gradient variance**: how much the gradient changes from one batch to the next.\n\n## Acronyms\n\n- **AWS**: Adaptive Warmup Scheduler\n- **SGD**: Stochastic Gradient Descent\n- **GPU**: Graphics Processing Unit *(inferred)*\n- **FLOPs**: Floating-point operations *(inferred)*\n\n## Next steps\n\n- Reproduce the 125 million parameter run with several thresholds.\n- Read the evidence for the variance claim in Section 3 before relying on it.\n\n## Annotation index\n\n- **p. 1** “lowers validation loss by 6.8 percent”: The main quantitative claim. Judge it against the baseline before calling 6.8 percent large.\n- **p. 1** “it assumes that gradient variance is a reliable proxy for training stability”: The whole method rests on this.\n- **p. 2** “the three schedules are statistically indistinguishable”: With 8,000 documents the benefit disappears entirely.\n- **p. 2** “We also tuned the threshold on the 125 million parameter model”: Tuning on one size can inflate the result at that size.\n"
+}
