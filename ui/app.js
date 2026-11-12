@@ -278,14 +278,19 @@ async function select(id, from) {
   if (!ann) return;
   if (from === "list") {
     const pv = S.pv[ann.page - 1];
-    pv.wrap.scrollIntoView({ block: "start" });
+    const viewer = $("#viewer");
+    // scroll only the page viewer: scrollIntoView would also scroll a web page that embeds this UI
+    viewer.scrollTo({ top: Math.max(0, pv.wrap.offsetTop - 20) });
     await renderPage(pv);
     const rects = pv.rects?.get(id);
-    const viewer = $("#viewer");
     if (rects?.length) viewer.scrollTo({ top: pv.wrap.offsetTop + rects[0].y - viewer.clientHeight / 3, behavior: "smooth" });
     markSelected();
   } else if (S.tab === "notes") {
-    $(`.ann[data-id="${id}"]`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const el = $(`.ann[data-id="${id}"]`), box = $("#tabBody");
+    if (el && box) {
+      const r = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+      if (r.top < b.top || r.bottom > b.bottom) box.scrollBy({ top: r.top - b.top - 12, behavior: "smooth" });
+    }
   }
 }
 
